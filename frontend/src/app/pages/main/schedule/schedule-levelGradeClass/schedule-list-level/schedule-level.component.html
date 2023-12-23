@@ -1,0 +1,9 @@
+<div class="schedule" *ngIf="data.length !== 0">
+    <div class="title">CẤP </div>
+    <br>
+    <app-base-card
+        [dataCard]="data"
+        (callback)="callback($event)"
+    >
+    </app-base-card>
+</div>

@@ -1,0 +1,14 @@
+<div class="setting">
+  <div class="header">
+    PHÒNG
+    <button class="btn-create create" *ngIf="!user_id" (click)="createClass()">+ Thêm phòng</button>
+  </div>
+  <br />
+  <app-base-card 
+    [dataCard]="data" 
+    [showIcon]="!user_id"
+    (callback)="routerTo($event)"
+    (callbackDelete)="delete($event)"
+  >
+  </app-base-card>
+</div>

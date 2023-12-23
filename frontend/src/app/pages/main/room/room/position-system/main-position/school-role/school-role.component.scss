@@ -1,0 +1,63 @@
+.school-role {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    .box-role {
+        width: 85%;
+        // height: 200px;
+        margin-right: 20px;
+        border-radius: 24px;
+        border: 1px solid #acacb4;
+        margin-bottom: 20px;
+        .header {
+            position: relative;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            background-color: #c9c9d0;
+            border-radius: 24px 24px 0 0;
+            p {
+                margin: 0;
+                padding: 15px;
+                font-size: 14px;
+                font-weight: 600;
+            }
+            input[type="checkbox"] {
+                position: absolute;
+                right: 20px;
+                height: 25px;
+                width: 25px;
+            }
+        }
+        .content {
+            padding-bottom: 15px;
+            .list {
+                position: relative;
+                display: flex;
+                align-items: center;
+                height: 40px;
+                p {
+                    margin: 0;
+                    padding-left: 15px;
+                }
+                input[type="checkbox"] {
+                    position: absolute;
+                    right: 20px;
+                    height: 25px;
+                    width: 25px;
+                }
+            }
+        }
+    }
+}
+.add-role {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    // margin: auto;
+    label {
+        font-size: 16px;
+        font-weight: 600;
+        margin: 10px 0;
+    }
+}

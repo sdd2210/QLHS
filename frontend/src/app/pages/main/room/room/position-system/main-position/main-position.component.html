@@ -1,0 +1,43 @@
+<div class="main" *ngIf="check === true">
+  <div class="title">
+    Thêm chức vụ mới
+  </div>
+  <div class="add-role">
+    <label for="">Tên chức vụ</label>
+    <input class="base-input" (input)="validateInput($event.target.value)" [(ngModel)]="model.Name" placeholder="Nhập tên chức vụ" type="text" name="" id="">
+    <p class="validate">{{error}}</p>
+  </div>
+  <br>
+  <div class="tabs">
+    <mat-tab-group>
+      <mat-tab label="Học sinh">
+        <app-student-role (callback)="handleEvent($event)" [(data)]="dataCreate" [(roleName)]="model.Name" [(type)]="type"></app-student-role>
+      </mat-tab>
+      <mat-tab label="Nhà trường">
+        <app-school-role (callback)="handleEvent($event)" [(dataRoleSchool)]="dataRoleSchool" [(roleName)]="model.Name" [(type)] = "type" [(roleId)]="roleId"></app-school-role>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+</div>
+<div class="main" *ngIf="check === false">
+  <div class="title">
+    Sửa chức vụ
+  </div>
+  <div class="add-role">
+    <label for="">Tên chức vụ</label>
+    <input class="base-input" [(ngModel)]="model.Name" placeholder="Nhập tên chức vụ" type="text" name="" id="">
+  </div>
+  <br>
+  <div class="tabs">
+    <mat-tab-group>
+      <mat-tab label="Học sinh">
+        <app-student-role [(data)]="data"  [(type)] = "type" [(roleName)]="model.Name" [(roleId)]="roleId"></app-student-role>
+      </mat-tab>
+      <mat-tab label="Nhà trường">
+        <app-school-role [(dataRoleSchool)]="dataRoleSchool" [(roleName)]="model.Name" [(type)] = "type" [(roleId)]="roleId"></app-school-role>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+</div>

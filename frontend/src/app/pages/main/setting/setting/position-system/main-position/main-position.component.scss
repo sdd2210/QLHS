@@ -1,0 +1,40 @@
+@import "~ng-zorro-antd/style/index.min.css";
+/* Import base styles */
+@import "~ng-zorro-antd/ng-zorro-antd.min.css";
+.main {
+    .title {
+        font-size: 26px;
+        font-weight: bold;
+    }
+    .add-role {
+        display: flex;
+        flex-direction: column;
+        width: 70%;
+        // margin: auto;
+        label {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px 0;
+        }
+    }
+}
+::ng-deep {
+    .mat-tab-group.mat-primary .mat-ink-bar,
+    .mat-tab-nav-bar.mat-primary .mat-ink-bar {
+        background-color: #ff872b;
+    }
+    .mat-tab-label,
+    .mat-tab-link {
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .mat-tab-list .mat-tab-labels .mat-tab-label-active {
+        color: #FF872B;
+        opacity: 1;
+    }
+}
+.validate{
+    margin: 0;
+    padding-top: 5px;
+    color: red; 
+}

@@ -1,0 +1,41 @@
+.school-year-create {
+    padding: 15px;
+  
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+    }
+  
+    .content {
+       margin-top: 25px;
+      .input-text {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 5px;
+  
+        label {
+          margin-bottom: 5px;
+        }
+      }
+  
+      .semester {
+        margin-bottom: 5px;
+  
+        .input-date {
+          margin-top: 5px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+  
+          .date {
+            width: 43%;
+          }
+        }
+      }
+      .group-btn{
+          margin-top: 25px;
+      }
+    }
+  }
+  

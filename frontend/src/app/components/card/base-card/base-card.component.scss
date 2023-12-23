@@ -1,0 +1,100 @@
+ul ,li {
+    list-style: none;
+    margin:0;
+    padding: 0;
+}
+
+.card{
+    display: grid;
+    grid-template-columns: 360px 360px 360px ;
+    grid-gap: 16px;
+    margin-bottom: 16px;
+    .base-card:hover{
+       background-color: #FF872B;
+       .card-img {
+        backdrop-filter: blur(80%);
+        img {
+            filter: brightness(0) invert(1);
+        }
+       }
+       .card-info{
+            filter: brightness(0) invert(1);
+       }
+       .delete{
+            filter: brightness(0) invert(1);
+        }
+    }
+    .base-card{
+        cursor: pointer;
+        height: 86px;
+        width: 360px;
+        border-radius: 15px;
+        display: flex;
+        position: relative;
+        box-shadow: 1px 0px 1px 2px rgb(0 0 0 / 4%);
+    
+        .card-img{
+            margin: 12px;
+            border-radius: 10px;
+            img{
+                height: 62px;
+                width: 62px;
+                object-fit: cover;
+            }
+        }
+        .card-info{
+            margin: 12px 0px;
+            .base-header{
+                font-size: 18px;
+                font-weight: 600;
+                line-height: 24px;
+    
+            }
+    
+            .base-text{
+                font-size: 15px;
+                font-weight: 500;
+                line-height: 20px;
+                align-items: center;
+                display: flex;
+                p{
+                    color: #23262F;
+                    font-weight: 600;
+                    margin: auto;
+                }
+                .total-grade{
+                    width: 8px;
+                    height: 8px;
+                    margin-right: 10px;
+                    border-radius: 50%;
+                    background-color:#c44e00;
+                }
+                .total-group{
+                    width: 8px;
+                    height: 8px;
+                    margin: 0 10px 0 10px;
+                    border-radius: 50%;
+                    background-color:#00C48C;
+                }
+                .total-person{
+                    width: 8px;
+                    height: 8px;
+                    margin: 0 10px 0 10px;
+                    border-radius: 50%;
+                    background: #0084F4;
+                    ;
+                }
+            } 
+         
+        }
+    
+    }
+}
+.delete{
+    width: 24px;
+    height: 24px;
+    right: 10px;
+    top: 10px;
+    position: absolute;
+
+}

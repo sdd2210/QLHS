@@ -1,0 +1,11 @@
+<app-loader></app-loader>
+<app-create-form
+  [(data)]="listCreate"
+  [(option)]="option"
+  [(dataModel)]="dataModel"
+  [(error)]="error"
+  [(arrayButton)]="arrayButton"
+  (callback)="handleCallbackEvent($event)"
+  (handleSelectChange)="callBackHandle($event)"
+></app-create-form>
+

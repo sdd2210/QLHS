@@ -1,0 +1,13 @@
+<div class="teacher">
+    <div class="title">
+      Admin
+    </div>
+    <br />
+    <app-table
+      [data]="data"
+      [tableData]="tableData"
+      [listActive]="listActive"
+      (callback)="handleTableCallback($event)"
+    ></app-table>
+  </div>
+  

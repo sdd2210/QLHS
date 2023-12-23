@@ -1,0 +1,15 @@
+<app-loader></app-loader>
+<mat-card class="example-card">
+  <mat-card-content>
+    <ng-container *ngIf="(pass | async)">
+      <app-create-form
+        [(data)]="listCreate"
+        [(dataModel)]="dataModel"
+        [(option)]="option"
+        [(arrayButton)]="arrayButton"
+        (callback)="handleCallbackEvent($event)"
+      ></app-create-form>
+    </ng-container>
+    
+  </mat-card-content>
+</mat-card>

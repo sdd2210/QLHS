@@ -1,0 +1,24 @@
+
+.setting{
+    .title{
+        font-size: 26px;
+        font-weight: bold;
+    }
+    .list-item{
+        display: flex;
+        cursor: pointer;
+        .item{
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border: 1px solid #ACACB4;
+            border-radius: 15px;
+            text-align: center;
+            margin-right: 20px;
+            h2{
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+        }
+    }
+}

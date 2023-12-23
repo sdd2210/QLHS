@@ -1,0 +1,10 @@
+<div class="member-detail">
+    <div class="title">LỚP: {{classDetail?.name}}</div>
+    <br>
+    <app-table
+        [data]="data"
+        [tableData]="tableData"
+        [listActive]="listActive"
+        (callback)="handleTableCallback($event)"
+    ></app-table>
+</div>

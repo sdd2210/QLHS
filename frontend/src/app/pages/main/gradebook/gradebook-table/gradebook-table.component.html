@@ -1,0 +1,120 @@
+<div class="container-fluid">
+  <div class="header">
+    <div class="title">LỚP: {{ detailClass?.name }}</div>
+    <br />
+    <div class="shadow select">
+      <div class="select-box">
+        <div class="line">
+          <label for="">Sỹ số</label>
+            {{totalPage}}
+        </div>
+        <div class="line">
+          <label for="">Kỳ học</label>
+          <select class="selected" [value]='semesterId' (change)="changeSelect($event.currentTarget.value, 'semester')">
+            <option value="all">Tất cả</option>
+            <option value="1">Kỳ 1</option>
+            <option value="2">Kỳ 2</option>
+          </select>
+        </div>
+        <div class="line">
+          <label for="">Môn học</label>
+          <select class="selected" [value]='subjectId' (change)="changeSelect($event.currentTarget.value, 'subject')">
+            <option *ngFor="let subject of listSubject" [value]="subject._id">
+              {{ subject.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="list-button">
+        <div class="btn-group">
+          <div class="list-button">
+            <button class="btn-schedule" (click)="clickSave()">
+              <img src="assets/svg/icon-save.svg" alt="" srcset="" />Lưu
+            </button>
+            <!-- <button class="btn-schedule">
+              <img src="assets/svg/icon-upload.svg" />Nhập
+            </button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+    <br />
+    <div class="table-scroll">
+      <table class="table-gradebook" style="width: 100%">
+        <thead>
+          <tr class="first_header">
+            <th rowspan="2"><input type="checkbox" (click)="selectAll($event.target.checked)" /></th>
+            <th rowspan="2" class="w-50">STT</th>
+            <th rowspan="2">Họ và tên</th>
+            <ng-container *ngFor="let test of listTest">
+              <ng-container *ngIf="test.list_exam.length > 0">
+                <th [attr.colspan]=test.list_exam.length style="width: 5%">
+                  {{ test.name }}
+                </th>
+              </ng-container>
+              <ng-container *ngIf="test.list_exam.length == 0 && test.name !== 'Tất cả'">
+                <th style="width: 5%">
+                  {{ test.name }}
+                </th>
+              </ng-container>
+              
+            </ng-container>
+            <th rowspan="2">TBC</th>
+            <th rowspan="2"></th>
+          </tr>
+          <tr>
+            <ng-container *ngFor="let test of listExam">
+              <th style="width: 5%">
+                {{ test.order }}
+              </th>
+            </ng-container>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let item of data">
+            <tr>
+              <td><input type="checkbox" [checked]="item.check === true"/></td>
+              <td>{{ item.stt }}</td>
+              <td>{{ item.account.full_name }}</td>
+              <ng-container *ngFor="let sub_item of item.value">
+                <ng-container *ngFor="let its of sub_item.value; let index=index">
+                  <td>
+                    <div 
+                    [ngClass]="'myDiv'+item.stt+''+index+''+sub_item.test_id"
+                    contenteditable=true 
+                    [textContent]="its??''"
+                    (input)="ngOnChanges($event.target.innerHTML, item._id, sub_item.test_id, index)"
+                    (keypress)="keyPress($event)"
+                    >
+                    </div>
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <td>{{getTotal(item.value, item._id)}}</td>
+              <td>
+                <button mat-icon-button aria-label="expand row" (click)="item.isExpand = !item.isExpand">
+                  <mat-icon *ngIf="!item.isExpand">keyboard_arrow_down</mat-icon>
+                  <mat-icon *ngIf="item.isExpand">keyboard_arrow_up</mat-icon>
+                </button>
+              </td>
+            </tr>
+            <ng-container matColumnDef="expandedDetail" *ngIf="item.isExpand">
+              <tr>
+                <td [attr.colspan]="5 + listExam.length">
+                  <div class="example-element-detail">
+                    <div>
+                      <p>Nhận xét</p>
+                      <textarea></textarea>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </ng-container>
+          </ng-container>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

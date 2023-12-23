@@ -1,0 +1,28 @@
+<div class="member-home">
+  <div class="title">CẤP HỌC
+    <div class="search-filter">
+      <div  class="spinner" *ngIf="spinner">
+        <mat-spinner [diameter]="20"></mat-spinner>
+      </div>
+      <input type="search" class="search" (input)="onSearchKey($any($event.target).value)" placeholder="Tìm kiếm học sinh" name="" id="">
+      <div class="list-result" *ngIf="results.length > 0">
+          <div class="student-detail" *ngFor="let item of results" (click)="clickStudent(item)">
+              <img [src]="item.MediaURL" (error)="setDefaultImg(item)" alt="" srcset="">
+              <div class="info-student">
+                   <span>{{item.full_name}}</span>
+                   <br>
+                   <span>Lớp: {{item.class.name}}</span>
+                   <br>
+                   <span>Mã HS: {{item.student_code}}</span>
+              </div>
+          </div> 
+      </div>
+    </div>
+
+  </div> 
+  <br><br>
+  <app-base-card *ngIf="check === true" [check]="true" [dataCard]="school" (callback)="routerSchoolLevel($event)">
+  </app-base-card>
+  <app-base-card [(dataCard)]="listLevel" (callback)="routerTo($event)">
+  </app-base-card>
+</div>

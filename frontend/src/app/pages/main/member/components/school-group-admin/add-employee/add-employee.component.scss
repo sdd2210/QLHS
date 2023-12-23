@@ -1,0 +1,152 @@
+.add-employee {
+  padding: 15px;
+  height: 90%;
+  position: relative;
+
+  .title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #707070;
+  }
+
+  .search-employee {
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: relative;
+
+    .search-input {
+      border-radius: 20px;
+      width: 100%;
+      font-size: 16px;
+      padding: 0 10px 0 20px;
+    }
+    .search-list {
+        max-height: 250px;
+        overflow: auto;
+        width: 95%;
+        box-shadow: 0 0 3px 1px #8080804d;
+        padding:0 10px;
+        position: absolute;
+        border: 1px solid #e4e4e4;
+        background: white;
+        z-index: 999;
+        top: 35px;
+        .employee-item {
+          width: 310px;
+          border: 1px solid #e4e4e4;
+          height: 55px;
+          border-radius: 35px;
+          display: flex;
+          align-items: center;
+          position: relative;
+          cursor: pointer;
+          margin: 10px 0;
+    
+          .avatar {
+            width: 40px;
+            height: 40px;
+            overflow: hidden;
+            padding-left: 10px;
+    
+            img {
+              width: 40px;
+              height: 40px;
+              border-radius: 50%;
+            }
+          }
+    
+          .info {
+            display: flex;
+            margin-left: 15px;
+            flex-direction: column;
+            line-height: 25px;
+          }
+    
+          .btn {
+            position: absolute;
+            right: 0;
+            width: 100px;
+            border-radius: 10px;
+            background: none;
+            text-align: center;
+    
+            button {
+              color: red;
+              background: none;
+              border: 1px solid red;
+              border-radius: 5px;
+              width: 70px;
+              height: 25px;
+            }
+          }
+        }
+      }
+  }
+
+  .employee-list {
+    max-height: 280px;
+    overflow: auto;
+    margin-top: 15px;
+    padding: 2px;
+
+    .employee-item {
+      width: 100%;
+      border: 1px solid #e4e4e4;
+      height: 55px;
+      border-radius: 35px;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      position: relative;
+      cursor: pointer;
+
+      .avatar {
+        width: 40px;
+        height: 40px;
+        overflow: hidden;
+        padding-left: 10px;
+
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+        }
+      }
+
+      .info {
+        display: flex;
+        margin-left: 15px;
+        flex-direction: column;
+        line-height: 25px;
+      }
+
+      .btn {
+        position: absolute;
+        right: 0;
+        width: 100px;
+        border-radius: 10px;
+        background: none;
+        text-align: center;
+
+        button {
+          color: red;
+          background: none;
+          border: 1px solid red;
+          border-radius: 5px;
+          width: 70px;
+          height: 25px;
+        }
+      }
+    }
+  }
+
+  .group-btn {
+    width: 95%;
+    position: absolute;
+    bottom: 10px;
+  }
+}

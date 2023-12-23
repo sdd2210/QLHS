@@ -1,0 +1,48 @@
+<div class="subject-create">
+    <div class="title">
+      Sửa môn học {{gradeName}}
+    </div>
+    <div class="form-create">
+      <div class="group-input">
+        <label for="">Tên môn học <span>*</span></label>
+        <input type="text" [(ngModel)]="model.SubjectName" class="base-input">
+      </div>
+      <div class="group-input">
+        <label for="">Tên giáo viên</label>
+        <!-- <textarea name="" class="base-input" id="" rows="15">
+        </textarea> -->
+        <div class="list-tags">
+          <div class="tags">
+            <nz-tag *ngFor="let tag of tags; let i = index">
+              {{ sliceTagName(tag?.TeacherName) }}
+              <mat-icon class="close" (click)="handleClose(tag)">close</mat-icon>
+            </nz-tag>
+            <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
+              <i nz-icon nzType="plus"></i>
+              + Thêm
+            </nz-tag>
+            <div class="search-box">
+              <input #inputElement nz-input class="chips-name" nzSize="small" (input)="onSearchKey($event.target.value)" *ngIf="inputVisible" type="text"
+              [(ngModel)]="inputValue"/>
+              <div class="list-result" *ngIf="results.length > 0">
+                <div class="student-detail" *ngFor="let item of results" (click)="clickSelectItem(item)">
+                  <img [src]="item.MediaURL" (error)="setDefaultImg(item)" alt="" srcset="">
+                  <div class="info-student">
+                    <b>{{item.TeacherName}}</b>
+                    <b>SĐT: {{item.Phone}}</b>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+  
+  </div>
+  <div class="group-btn">
+    <button class="btn-cancel" (click)="closeDialog()">Hủy</button>
+    <button class="btn-save" (click)="saveFunction()">Xác nhận</button>
+  </div>
+  

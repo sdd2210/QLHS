@@ -1,0 +1,70 @@
+<app-loader></app-loader>
+<div class="member-home">
+  <div class="title">LỚP: {{detailClass?.name}}</div>
+  <!-- <p>Giáo viên chủ nhiệm: Nguyễn văn A</p>
+  <p>Sĩ số: 35</p> -->
+  <div class="btn-group">
+    <div class="list-button">
+      <!-- <button *ngIf="checkPrivilege" class="btn-schedule" (click)="buttonSaveChange()">
+        <img src="assets/svg/icon-save.svg" alt="" srcset="" />Lưu
+      </button>
+      <button *ngIf="checkPrivilege" class="btn-schedule" (click)="upload()">
+        <img src="assets/svg/icon-upload.svg" />Nhập
+      </button> -->
+      <button (click)="exportExcel(dataExport, 'Thời khoá biểu')" class="btn-schedule">
+        <img src="assets/svg/icon-output.svg" />Xuất
+      </button>
+      <p></p> <input class="select-date base-input" type="date" [(ngModel)]="today" (change)="getTimeTable($event.target.value)">
+    </div>
+    <!-- <div>
+      <button class="btn-create">+ Thêm</button>
+    </div> -->
+  </div>
+  <div class="schedule">
+    <table class="table-schedule">
+      <thead>
+        <tr>
+          <th>Tiết</th>
+          <th>Thứ 2</th>
+          <th>Thứ 3</th>
+          <th>Thứ 4</th>
+          <th>Thứ 5</th>
+          <th>Thứ 6</th>
+          <th>Thứ 7</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let i of dataSchedule">
+          <td>{{ i.name }}</td>
+          <td *ngFor="let item of i.list_subject ; index as index">
+            <p *ngIf="item.subject_name === 'Chào cờ'">{{ item.subject_name }}</p>
+            <div class="listSubject" *ngIf="
+                item.subject_name !== 'Chào cờ' && item.subject_id
+              ">
+              <div class="subject_name">
+                <div>{{item.subject_name}}</div>
+                <button (click)="edit(i.lesson_id, index + 2, item)" mat-icon-button matTooltip="Sửa đổi" color="primary" aria-label="Example icon-button with a heart icon">
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+              <div class="sub_title">
+                {{item.TeacherName}}
+              </div>
+              <div class="sub_room">
+                Phòng {{item.RoomName}}
+              </div>
+            </div>
+            <div class="add" *ngIf="
+                !item.subject_id
+              ">
+              <button (click)="addLesson(i.lesson_id, index + 2)" mat-icon-button matTooltip="Thêm mới" color="warn" aria-label="Example icon-button with a heart icon">
+                <mat-icon>add</mat-icon>
+              </button>
+            
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

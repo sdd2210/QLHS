@@ -1,0 +1,30 @@
+<div class="school-year-create">
+   <div class="title">
+       THÊM NĂM HỌC
+   </div>
+   <div class="content">
+          <div class="input-text">
+             <label for="">Tên năm học</label>
+             <input type="text" [(ngModel)]="model.name" name="" class="base-input">
+          </div>
+          <div class="semester">
+             <label for="">Học kỳ I</label>
+             <div class="input-date">
+                 <input class="base-input date" [(ngModel)]="model.first_start" type="date" name="" id=""> - 
+                 <input class="base-input date" [(ngModel)]="model.first_end" type="date" name="" id="">
+             </div>
+          </div>
+          <div class="semester">
+            <label for="">Học kỳ II</label>
+            <div class="input-date">
+                <input class="base-input date" [(ngModel)]="model.second_start" type="date" name="" id=""> - 
+                <input class="base-input date" [(ngModel)]="model.second_end" type="date" name="" id="">
+            </div>
+         </div>
+         <div class="group-btn">
+              <button class="btn-cancel" (click)="closeDialog()">Hủy</button>
+              <button class="btn-save" (click)="save()">Xác nhận</button>
+         </div>
+   </div>
+</div>
+

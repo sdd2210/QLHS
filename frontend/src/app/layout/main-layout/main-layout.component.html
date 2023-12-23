@@ -1,0 +1,19 @@
+<div class="main-layout">
+
+    <mat-drawer-container class="example-container" autosize>
+        <div class="main-layout-header">
+            <!-- <app-header-logo (click)="drawer.toggle()"></app-header-logo> -->
+            <div class="title">
+                <!-- <button mat-stroked-button color="primary" *ngIf="back_hide" (click)="back()">Primary</button> -->
+                {{current_semester}} </div>
+            <app-header-info></app-header-info>
+        </div>
+        <mat-drawer opened #drawer class="example-sidenav" mode="side" style="border-radius:50px;">
+            <app-nav-menu [dataNavMenu]='dataNav'></app-nav-menu>
+        </mat-drawer>
+        <div class="example-sidenav-content" [@routeAnimations]="prepareRoute(outlet)">
+            <router-outlet #outlet="outlet"></router-outlet>
+        </div>
+    </mat-drawer-container>
+
+</div>

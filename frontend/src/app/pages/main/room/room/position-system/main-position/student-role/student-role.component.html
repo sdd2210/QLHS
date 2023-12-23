@@ -1,0 +1,28 @@
+
+<div class="position-select" *ngFor="let item of data; let index = index;">
+    <table class="position-table">
+      <thead>
+        <tr>
+          <th scope="col"> {{item.Name}}</th>
+          <th scope="col" *ngFor="let listLevel of columnMember">
+            <div class="content">
+              <p>{{listLevel.Name}}</p>
+              <input type="checkbox" [checked]="item.check" (change)="selectAll($event.target.checked, item.PrivilegeList, listLevel)" name="" id="">
+            </div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let privilegeList of item.PrivilegeList; let index = index;">
+          <td>{{privilegeList.Name}}</td>
+          <td *ngFor="let i of privilegeList.SchoolLevelList; let ix = index;">
+            <input [checked] = "i.RoleSchoolLevelPrivilegeStatus === 1 && privilegeList.RoleSchoolLevelPrivilegeStatus === 1" (change)="changeEvent($event.target.checked, item ,privilegeList, i, index, ix)" type="checkbox">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="group-btn">
+    <button class="btn-cancel" (click)="cancelFunction()">Hủy bỏ</button>
+    <button class="btn-save" (click)="save()">Lưu</button>
+   </div>

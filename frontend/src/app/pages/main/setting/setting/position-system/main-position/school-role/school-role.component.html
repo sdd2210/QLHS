@@ -1,0 +1,20 @@
+
+<div class="school-role">
+    <div class="box-role" *ngFor="let item of listRole">
+        <div class="header">
+            <p>{{item.Name}}</p>
+            <input (change)="selectAll($event.target.checked, item)" type="checkbox" name="" id="">
+        </div>
+        <div class="content">
+            <div class="list" *ngFor="let listPrivilege of item.PrivilegeList; let ix = index;">
+                <p>{{listPrivilege.Name}}</p>
+                <input  type="checkbox" (change)="selectItem($event.target.checked, listPrivilege, item.PrivilegeList, ix)" [checked]="listPrivilege.RoleSchoolLevelPrivilegeStatus === 1 && listPrivilege.Status === 1" name="" id="">
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="group-btn">
+    <button class="btn-cancel" (click)="cancelFunction()">Hủy bỏ</button>
+    <button class="btn-save"  (click)="save()" >Lưu</button>
+</div>

@@ -1,0 +1,11 @@
+<div class="create-employee">
+  <app-create-form
+    [(data)]="listCreate"
+    [(option)]="option"
+    [(error)]="error"
+    [(dataModel)]="dataModel"
+    (handleSelectChange)="callBackHandle($event)"
+    [(arrayButton)]="arrayButton"
+    (callback)="handleCallbackEvent($event)"
+  ></app-create-form>
+</div>

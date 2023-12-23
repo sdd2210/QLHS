@@ -1,0 +1,12 @@
+<div class="custom-dialog {{modalType}}">
+	<h2 mat-dialog-title class="title">{{data.modalTitle}}</h2>
+	<mat-dialog-content>
+		<p>
+			{{data.modalMessage}}
+		</p>
+	</mat-dialog-content>
+	<mat-dialog-actions align="end">
+		<button mat-button mat-raised-button button class="btn-cancel" [mat-dialog-close]="false">Thoát</button>
+		<button mat-raised-button color="warn" class="btn-save" [mat-dialog-close]="true">Đồng ý</button>
+	</mat-dialog-actions>
+</div>

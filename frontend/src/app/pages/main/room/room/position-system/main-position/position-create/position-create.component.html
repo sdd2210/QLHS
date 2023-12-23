@@ -1,0 +1,200 @@
+<div class="create-position">
+  <div class="header">
+    <h3>Thêm chức vụ mới</h3>
+  </div>
+  <div class="main-content">
+    <div class="position-name">
+      <label for="">Tên chức vụ</label>
+      <input type="text" class="base-input" placeholder="Nhập tên chức vụ">
+    </div>
+    <h3>Chọn quyền</h3>
+    <h3>Học sinh</h3>
+    <div class="position-select" *ngFor="let item of dataRole">
+      <table class="position-table">
+        <thead>
+          <tr>
+            <th scope="col"> {{item.Name}}</th>
+            <th scope="col" *ngFor="let item of columnMember">
+              <div class="content">
+                <p>{{item.name}}</p>
+                <input type="checkbox" (change)="selectAll($event.target.checked, item)" name="" id="">
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let privilegeList of item.PrivilegeList">
+            <td>{{privilegeList.Name}}</td>
+            <td *ngFor="let i of privilegeList.SchoolLevelList">
+              <input id="" [checked]="i.RoleSchoolLevelPrivilegeStatus === 1"
+                (change)="changeEvent($event.target.checked, i, privilegeList)" type="checkbox">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- <div class="position-select">
+      <label for=""></label>
+      <table class="position-table">
+        <thead>
+          <tr>
+            <th scope="col">QUẢN LÝ HỌC SINH</th>
+            <th scope="col" *ngFor="let item of columnMember">
+              <div class="content">
+                <p>{{item.name}}</p>
+                <input type="checkbox" (change)="selectAll($event.target.checked, item)" name="" id="">
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of dataStudent">
+            <td>{{item.name}}</td>
+            <td *ngFor="let i of columnMember">
+              <input type="checkbox">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="position-select">
+      <label for=""></label>
+      <table class="position-table">
+        <thead>
+          <tr>
+            <th scope="col">THỜI KHÓA BIỂU</th>
+            <th scope="col" *ngFor="let item of columnMember">
+              <div class="content">
+                <p>{{item.name}}</p>
+                <input type="checkbox" (change)="selectAll($event.target.checked, item)" name="" id="">
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of timeTableSchedule">
+            <td>{{item.name}}</td>
+            <td *ngFor="let i of columnMember">
+              <input type="checkbox">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="position-select">
+      <label for=""></label>
+      <table class="position-table">
+        <thead>
+          <tr>
+            <th scope="col">THỰC ĐƠN</th>
+            <th scope="col" *ngFor="let item of columnMember">
+              <div class="content">
+                <p>{{item.name}}</p>
+                <input type="checkbox" (change)="selectAll($event.target.checked, item)" name="" id="">
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of menu">
+            <td>{{item.name}}</td>
+            <td *ngFor="let i of columnMember">
+              <input type="checkbox">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <br>
+    <div class="position-select">
+      <h3>NHÀ TRƯỜNG</h3>
+      <div class="school">
+        <table class="position-table">
+          <thead>
+            <tr>
+              <th scope="col">QUẢN LÝ THÀNH VIÊN NHÀ TRƯỜNG</th>
+              <th scope="col">
+                <div class="content">
+                  <input type="checkbox" (change)="selectAllSchool($event.target.checked, 'school-member')" name="" id="">
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of schoolData">
+              <td>{{item.name}}</td>
+              <td>
+                <input [checked]="item.check" type="checkbox">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="position-table">
+          <thead>
+            <tr>
+              <th scope="col">THÔNG BÁO</th>
+              <th scope="col">
+                <div class="content">
+                  <input type="checkbox" (change)="selectAllSchool($event.target.checked, 'school-notification')" name="" id="">
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of notification">
+              <td>{{item.name}}</td>
+              <td>
+                <input [checked]="item.check" type="checkbox">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="position-table">
+          <thead>
+            <tr>
+              <th scope="col">TIN TỨC NỔI BẬT</th>
+              <th scope="col">
+                <div class="content">
+                  <input type="checkbox" (change)="selectAllSchool($event.target.checked, 'school-news')" name="" id="">
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of news">
+              <td>{{item.name}}</td>
+              <td>
+                <input [checked]="item.check" type="checkbox">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="position-table">
+          <thead>
+            <tr>
+              <th scope="col">THÔNG TIN 2 CHIỀU</th>
+              <th scope="col">
+                <div class="content">
+                  <input type="checkbox" name="" id="">
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of feedBack">
+              <td>{{item.name}}</td>
+              <td>
+                <input type="checkbox">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+     
+    </div> -->
+  </div>
+  <div class="group-btn">
+    <button class="btn-cancel">Hủy bỏ</button>
+    <button class="btn-save">Lưu</button>
+  </div>
+</div>

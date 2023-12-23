@@ -1,0 +1,37 @@
+<div class="add-employee">
+  <div class="title">
+        CHỌN THÀNH VIÊN
+  </div>
+  <div class="search-employee">
+      <input class="base-input search-input" [(ngModel)]="search" (input)="searchEmployee($any($event.target).value)" placeholder="Tìm kiếm" type="search" name="" id="">
+      <div class="search-list" *ngIf="result !== []">
+        <div class="employee-item" *ngFor="let item of result" (click)="selectItem(item)">
+            <div class="avatar" >
+                 <img src="assets/img/default-avatar.jpg" alt="">
+            </div>
+            <div class="info" >
+                <b>{{item.LastName}}</b>
+                <b>SĐT: {{item.Phone}}</b>
+            </div>
+        </div>
+      </div>
+  </div>
+  <div class="employee-list">
+     <div class="employee-item" *ngFor="let item of listSelected; let index = index;">
+         <div class="avatar">
+              <img src="assets/img/default-avatar.jpg" alt="">
+         </div>
+         <div class="info">
+            <b>{{item.LastName}}</b>
+            <b>SĐT: {{item.Phone}}</b>
+         </div>
+         <div class="btn">
+            <button (click)="removeItem(index)">Xóa</button>
+         </div>
+     </div>
+  </div>
+  <div class="group-btn">
+      <button class="btn-save" (click)="save()">Xác nhận</button>
+      <button class="btn-cancel" (click)="closeDialog()">Hủy</button>
+  </div>
+</div>

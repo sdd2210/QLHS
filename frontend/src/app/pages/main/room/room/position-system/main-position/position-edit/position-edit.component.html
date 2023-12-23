@@ -1,0 +1,41 @@
+<div class="create-position">
+    <div class="header">
+      <h3>Sửa chức vụ mới</h3>
+    </div>
+    <div class="main-content">
+      <div class="position-name">
+        <label for="">Tên chức vụ</label>
+        <input type="text" class="base-input" placeholder="Nhập tên chức vụ">
+      </div>
+      <h3>Chọn quyền</h3>
+      <h3>Học sinh</h3>
+      <div class="position-select" *ngFor="let item of dataRole">
+        <table class="position-table">
+          <thead>
+            <tr>
+              <th scope="col"> {{item.Name}}</th>
+              <th scope="col" *ngFor="let item of columnMember">
+                <div class="content">
+                  <p>{{item.name}}</p>
+                  <input type="checkbox" (change)="selectAll($event.target.checked, item)" name="" id="">
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let privilegeList of item.PrivilegeList">
+              <td>{{privilegeList.Name}}</td>
+              <td *ngFor="let i of privilegeList.SchoolLevelList">
+                <input id="" [checked]="i.RoleSchoolLevelPrivilegeStatus === 1"  (change)="changeEvent($event.target.checked, i, privilegeList)" type="checkbox">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="group-btn">
+      <button class="btn-save">Lưu</button>
+      <button class="btn-cancel">Hủy bỏ</button>
+    </div>
+  </div>
+  

@@ -54,7 +54,7 @@ export class CreateScheduleComponent implements OnInit {
           SubjectId: this.data.subject_id,
         }
         this.subjectService.getListSubjectOfGrade(this.data.gradeId).subscribe((dt =>{
-          this.listCreate[1].data = dt.map(x=>({
+          this.listCreate[1].data = this.data.dataCommon.concat(dt).map(x=>({
             value: x._id,
             name: x.name,
           }))
@@ -107,7 +107,7 @@ export class CreateScheduleComponent implements OnInit {
           }))
         });
         this.subjectService.getListSubjectOfGrade(this.data.gradeId).subscribe((dt =>{
-          this.listCreate[1].data = dt.map(x=>({
+          this.listCreate[1].data = this.data.dataCommon.concat(dt).map(x=>({
             value: x._id,
             name: x.name,
           }))
@@ -128,13 +128,36 @@ export class CreateScheduleComponent implements OnInit {
     console.log(ev.type);
     if (ev.type === 'select-data') {
       console.log(ev.item);
-      this.employeeService.getEmployeeBySubject(ev.item.SubjectId).subscribe((dt)=>{
-        this.listCreate[2].data = dt.original.map(x=>({
-          value: x._id,
-          name: x.account.full_name,
-        }))
-      });
-      this.dataModel = ev.item;
+      const check_common = this.data.dataCommon.find(x=>x._id == ev.item.SubjectId);
+      console.log(check_common);
+      if(!check_common)
+      {
+        const index = this.listCreate.findIndex(x=>x.id == 'EmployeeId');
+        if(index != 2){
+          this.listCreate.splice(2, 0, {
+            id: 'EmployeeId',
+            label: 'Giáo viên',
+            name: 'EmployeeId',
+            type: 'selected',
+            data: [],
+            required: true,
+          },);
+        }
+        this.employeeService.getEmployeeBySubject(ev.item.SubjectId).subscribe((dt)=>{
+          this.listCreate[2].data = dt.original.map(x=>({
+            value: x._id,
+            name: x.account.full_name,
+          }))
+        });
+        this.dataModel = ev.item;
+      }else{
+        const index = this.listCreate.findIndex(x=>x.id == 'EmployeeId');
+        if(index > 0)
+        {
+          this.listCreate.splice(index, 1);
+          this.dataModel = {...ev.item, EmployeeId: undefined};
+        }
+      }
     }
     else {
       this.dataModel = ev.item;

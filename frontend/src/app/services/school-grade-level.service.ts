@@ -40,12 +40,16 @@ export class SchoolGradeLevelService {
     return this.http.get(`grade/statics`).pipe(map((res: any) => res));
   }
 
+  getGradeByID(id: string){
+    return this.http.post(`grade/getby_id`,{id}).pipe(map((res: any) => res));
+  }
+
   getGradeOfGradeKey(grade: number){
     return this.http.post(`level/getgrade/${grade}`,{}).pipe(map((res: any) => res));
   }
 
-  getClassOfGrade(grade_key: string, user_id?: string, searchstring?: any){
-    return this.http.post(`class/list_all`,{grade_key: grade_key, user_id, searchstring}).pipe(map((res: any) => res));
+  getClassOfGrade(grade_key: string, user_id?: string, searchstring?: any, grade_id?: any){
+    return this.http.post(`class/list_all`,{grade_key: grade_key, user_id, searchstring, grade_id}).pipe(map((res: any) => res));
   }
 
   getSubjectOfGrade(grade_key: string){

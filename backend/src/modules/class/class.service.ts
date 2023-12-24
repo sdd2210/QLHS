@@ -28,9 +28,34 @@ export class ClassService {
       return data;
     });
   }
-  async getAll(grade_key = 'all', searchstring?: any, user_id?: any) {
+  async getAll(
+    grade_id = 'all',
+    grade_key = 'all',
+    searchstring?: any,
+    user_id?: any,
+  ) {
     let query = [];
     query.push({ $match: { delete_at: null } });
+    if (grade_id != 'all') {
+      query.push({
+        $lookup: {
+          from: 'grades',
+          localField: 'grade_id',
+          foreignField: '_id',
+          as: 'grade_infor',
+          pipeline: [
+            {
+              $match: {
+                _id: new Types.ObjectId(grade_id),
+              },
+            },
+          ],
+        },
+      });
+      query.push({
+        $unwind: '$grade_infor',
+      });
+    }
     if (grade_key != 'all') {
       query.push({
         $lookup: {

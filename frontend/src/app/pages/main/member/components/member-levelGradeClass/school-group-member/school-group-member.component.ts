@@ -17,7 +17,7 @@ export class SchoolGroupMemberComponent implements OnInit {
   ) { }
   school = [
     {
-      name: "Cán bộ, nhân viên",
+      name: "Giáo viên bộ môn",
       Type: "Employee",
       studentCount: 3
     },

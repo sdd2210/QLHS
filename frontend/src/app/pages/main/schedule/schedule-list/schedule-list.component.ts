@@ -12,6 +12,7 @@ import { SchoolGradeLevelService } from 'src/app/services/school-grade-level.ser
 import { SubjectService } from 'src/app/services/subject.service';
 import { CreateScheduleComponent } from '../create-schedule/create-schedule.component';
 import { MemberService } from 'src/app/services/member.service';
+import { lastValueFrom } from 'rxjs';
 @Component({
   selector: 'app-schedule-list',
   templateUrl: './schedule-list.component.html',
@@ -34,6 +35,7 @@ export class ScheduleListComponent implements OnInit {
   arrayBuffer: any;
   file: File;
   dataImport: any = [];
+  dataCommon: any = [];
   dataSchedule = [];
   dataRoom = [];
   dataExport = [];
@@ -50,7 +52,7 @@ export class ScheduleListComponent implements OnInit {
   error: any;
   listPrivilege: any = [];
   checkPrivilege: any;
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     window.onbeforeunload = function () {
       return 'Are you sure you want to leave?';
     };
@@ -72,11 +74,13 @@ export class ScheduleListComponent implements OnInit {
       this.detailClass = res;
       this.gradeId = res.grade_id;
     })
-    this.getTimeTable(this.today);
-    this.getListSubject();
-    this.getSemester();
+    await this.getTimeTable(this.today);
+    await this.getListSubject();
+    await this.getCommon();
+    await this.getSemester();
+    this.listSubject = this.listSubject?.concat(this.dataCommon);
   }
-  getSemester() {
+ async getSemester() {
     this.scheduleService.getListSemester().subscribe(res => {
       this.currentSemester = {
         year : new Date(res.start_date).getFullYear(),
@@ -88,45 +92,40 @@ export class ScheduleListComponent implements OnInit {
     })
   }
 
-  getTimeTable(today) {
-    
-    this.scheduleService.getListLesson().subscribe(res=>{
-      this.dataSchedule = res.map(x => ({
-        name: x.Name, lesson_id: x._id, list_subject: [
-          {}, {}, {}, {}, {}, {},
-        ]
-      }));
-    });
-    this.memberService.getAllRoom().subscribe((dt)=>{
-      this.dataRoom = dt.map(x=>({
-        value: x._id,
-        name: x.name,
-      }))
-    });
-    this.scheduleService.getScheduleOfClass(this.classId, today).subscribe(res => {
-      this.dataSchedule = this.dataSchedule.map(x=>{
-        const found = res.find(o=>x.lesson_id == o.list_lesson.lesson_id);
-        if(found){
-          x.list_subject = found.list_lesson.list_subject.map(o=>{
-            const found_room = this.dataRoom.find(k=>k.value == o.room_id);
-            const found_subject = found.subjects.find(k=>k._id == o.subject_id);
-            const found_techear = found.employee.find(k=>k._id == o.teacher_id);
-            if(found_subject){
-              o.subject_name = found_subject.name
-            }
-            if(found_techear){
-              o.TeacherName = found_techear.account.full_name
-            }
-            if(found_room){
-              o.RoomName = found_room.name
-            }
-            return o;
-          });
-        }
-        return x;
-      })
-      console.log(this.dataSchedule)
-    });
+  async getTimeTable(today) {
+    const init_data = await lastValueFrom(this.scheduleService.getListLesson());
+    this.dataSchedule = init_data.map(x => ({
+      name: x.Name, lesson_id: x._id, list_subject: [
+        {}, {}, {}, {}, {}, {},
+      ]
+    }));
+    const data_room = await lastValueFrom(this.memberService.getAllRoom());
+    this.dataRoom = data_room.map(x=>({
+      value: x._id,
+      name: x.name,
+    }))
+    const current_timetable = await lastValueFrom(this.scheduleService.getScheduleOfClass(this.classId, today));
+    this.dataSchedule = this.dataSchedule.map(x=>{
+      const found = current_timetable.find(o=>x.lesson_id == o.list_lesson.lesson_id);
+      if(found){
+        x.list_subject = found.list_lesson.list_subject.map(o=>{
+          const found_room = this.dataRoom.find(k=>k.value == o.room_id);
+          const found_subject = found.subjects.find(k=>k._id == o.subject_id);
+          const found_techear = found.employee.find(k=>k._id == o.teacher_id);
+          if(found_subject){
+            o.subject_name = found_subject.name
+          }
+          if(found_techear){
+            o.TeacherName = found_techear.account.full_name
+          }
+          if(found_room){
+            o.RoomName = found_room.name
+          }
+          return o;
+        });
+      }
+      return x;
+    })
   }
   incomingfile(event, item) {
     let fileReader = new FileReader();
@@ -272,12 +271,13 @@ export class ScheduleListComponent implements OnInit {
     }
 
   }
-  getListSubject() {
-    this.subjectService.getListSubjectOfGrade(this.gradeId).subscribe(res => {
-      this.listSubject = res;
-      console.log("subject", res);
-
-    });
+  async getListSubject() {
+    const data = await lastValueFrom(this.subjectService.getListSubjectOfGrade(this.gradeId));
+    this.listSubject = data;
+  }
+  async getCommon() {
+    const data = await lastValueFrom(this.subjectService.getListSubjectCommon());
+    this.dataCommon = data;
   }
 
   onChange(item, value) {
@@ -369,7 +369,7 @@ export class ScheduleListComponent implements OnInit {
       width: '800px',
       // height: '400px',
       disableClose: true,
-      data:{lesson_id, index, gradeId: this.gradeId, current_semester}
+      data:{lesson_id, index, gradeId: this.gradeId, current_semester, dataCommon: this.dataCommon}
     }).afterClosed().subscribe(result => {
       if (result) {
         // console.log(result.item);
@@ -393,7 +393,7 @@ export class ScheduleListComponent implements OnInit {
       width: '800px',
       // height: '400px',
       disableClose: true,
-      data:{lesson_id, index, gradeId: this.gradeId, ...item, type: 'edit'}
+      data:{lesson_id, index, gradeId: this.gradeId, ...item, dataCommon: this.dataCommon, type: 'edit'}
     }).afterClosed().subscribe(result => {
       if (result) {
         this.scheduleService.addLessonTimeTable({

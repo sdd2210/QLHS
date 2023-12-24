@@ -35,4 +35,15 @@ export class GradeController extends AppController {
   async getStatics(@Req() req, @Param() param, @Body() body: any) {
     return await this.gradeService.getStatics();
   }
+
+  @Post('/getby_key')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  async getByKey(@Req() req, @Body() body: any) {
+    return await this.gradeService.getByKey(body.key);
+  }
+  @Post('/getby_id')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  async getByID(@Req() req, @Body() body: any) {
+    return await this.gradeService.getByID(body.id);
+  }
 }

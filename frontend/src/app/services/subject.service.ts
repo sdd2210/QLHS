@@ -10,6 +10,9 @@ export class SubjectService {
     getListSubjectOfGrade(gradeId) {
         return this.http.post(`subject/list_all`,{grade_key: gradeId}).pipe(map((res: any) => res));
     }
+    getListSubjectCommon() {
+        return this.http.get(`subject/common`).pipe(map((res: any) => res));
+    }
     createSubject(body) {
         return this.http.post('subject/addnew', body).pipe(map((res: any) => res));
     }

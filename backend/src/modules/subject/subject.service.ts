@@ -88,6 +88,13 @@ export class SubjectService {
     return data || { _id: '' };
   }
 
+  async getCommon() {
+    const data = await this.tSubjectModel.find({
+      grade_id: null,
+    });
+    return data;
+  }
+
   async createOne(body) {
     const { grade_id, name, description } = body;
     const dataGrade = await this.gradeService.getInfor(grade_id);

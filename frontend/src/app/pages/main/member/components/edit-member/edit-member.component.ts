@@ -37,6 +37,7 @@ export class EditMemberComponent implements OnInit {
   ];
   listCreate = [];
   ngOnInit(): void {
+    console.log(this.data)
     this.listCreate = this.conFig.detail;
     this.dataModel = {
       LastName: this.data.account.full_name,

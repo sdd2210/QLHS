@@ -54,7 +54,12 @@ export class GradeService {
     const data = await this.tGradeModel.aggregate(query);
     return data;
   }
-
+  async getByKey(key: string) {
+    return await this.tGradeModel.findOne({ grade_key: key });
+  }
+  async getByID(id: string) {
+    return await this.tGradeModel.findOne({ _id: new Types.ObjectId(id) });
+  }
   async getStatics() {
     const data = await this.tGradeModel.aggregate([
       {

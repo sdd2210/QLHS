@@ -34,15 +34,17 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let i of dataSchedule">
+        <tr *ngFor="let i of dataSchedule; index as rootIndex">
           <td>{{ i.name }}</td>
           <td *ngFor="let item of i.list_subject ; index as index">
-            <p *ngIf="item.subject_name === 'Chào cờ'">{{ item.subject_name }}</p>
             <div class="listSubject" *ngIf="
                 item.subject_name !== 'Chào cờ' && item.subject_id
               ">
               <div class="subject_name">
-                <div>{{item.subject_name}}</div>
+                <div>
+                  {{item.subject_name}}
+                  
+                </div>
                 <button (click)="edit(i.lesson_id, index + 2, item)" mat-icon-button matTooltip="Sửa đổi" color="primary" aria-label="Example icon-button with a heart icon">
                   <mat-icon>edit</mat-icon>
                 </button>

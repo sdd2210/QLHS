@@ -38,6 +38,9 @@ export class EditTeacherComponent implements OnInit {
 
   ngOnInit(): void {
     this.data.Gender = this.data.account.gender;
+    this.data.Email = this.data.account.email;
+    this.data.ClassId = this.data.class._id;
+    this.data.GradeId = this.data.class.grade_id;
     this.dataModel = this.data;
     this.listCreate = this.conFig.detailTeacher;
     this.listCreate[3].data = [
@@ -52,11 +55,11 @@ export class EditTeacherComponent implements OnInit {
     ];
     console.log(this.dataModel);
 
-    this.getGrade();
-    this.getClassOfGrade(this.dataModel.grade_key);
+    this.getGrade(this.dataModel.class.grade_id);
+    this.getClassOfGrade(this.data.class.grade_id);
   }
   getClassOfGrade(gradeid) {
-    this.schoolLevelGrade.getClassOfGrade(gradeid).subscribe(res => {
+    this.schoolLevelGrade.getClassOfGrade(undefined,undefined,undefined,gradeid).subscribe(res => {
       this.listCreate[5].data = res.map(x => {
         return {
           value: x._id,
@@ -65,13 +68,13 @@ export class EditTeacherComponent implements OnInit {
       });
     })
   }
-  getGrade() {
-    this.schoolLevelGrade.getGradeOfLevel(null).subscribe(res => {
+  getGrade(id) {
+    this.schoolLevelGrade.getGrade(undefined).subscribe(res => {
       this.listCreate[4].data = res.map(
         x => {
           return {
-            value: x.GradeId,
-            name: x.Name
+            value: x._id,
+            name: x.name
           }
         }
       );

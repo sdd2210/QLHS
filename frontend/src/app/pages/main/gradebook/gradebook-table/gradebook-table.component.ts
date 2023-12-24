@@ -327,14 +327,26 @@ export class GradebookTableComponent implements OnInit {
     }
   }
   keyPress(event: KeyboardEvent) {
-    const pattern = /^(?:[0-9]|0[1-9]|10)?(\.[0-9]{1,2})?$/;
-    const inputChar = String.fromCharCode(event.charCode);
-    if (!pattern.test(inputChar)) {
-      // invalid character, prevent input
+    const number = Number(event.key);
+    if(isNaN(number) && event.key != '.')
+    {
       event.preventDefault();
     }
   }
-  ngOnChanges(changes: any, student_id: any, test_id: any, index: any): void {
+  ngOnChanges(event: any,changes: any, student_id: any, test_id: any, index: any): void {
+    const number = Number(changes);
+    const check_dot = changes.indexOf('.');
+    if(number < 0){
+      event.target.innerHTML = '0';
+    }
+    if(isNaN(number) || changes.indexOf('.',check_dot+1) > 0){
+      event.target.innerHTML = changes.substring(0, changes.indexOf('.',check_dot+1))
+      changes = changes.substring(0, changes.indexOf('.',check_dot+1));
+    }
+    if(number > 10){
+      event.target.innerHTML ='10'
+      changes = '10';
+    }
     const foundindex = this.dataTmp?.findIndex((x) => x._id == student_id);
     this.dataTmp[foundindex].value = this.dataTmp[foundindex].value.map(x=>{
       if(test_id == x.test_id){
@@ -342,22 +354,6 @@ export class GradebookTableComponent implements OnInit {
       }
       return x;
     })
-    
-    // if (index < 0) {
-    //   this.listGrade.push({ student_id, exam: [{ ...exam, value: changes }] });
-    // } else {
-    //   const test = this.listGrade[index].exam.findIndex(
-    //     (x) =>
-    //       x.test_id == exam.test_id &&
-    //       x.exam_id == exam.exam_id &&
-    //       x.order == exam.order
-    //   );
-    //   if (test < 0) {
-    //     this.listGrade[index].exam.push({ ...exam, value: changes });
-    //   } else {
-    //     this.listGrade[index].exam[test].value = changes;
-    //   }
-    // }
   }
   edit(_id,test_id, index,stt){
     console.log(`.${'myDiv'+(stt+1)}${index}${test_id}`);

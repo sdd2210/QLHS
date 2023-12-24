@@ -53,4 +53,10 @@ export class SubjectController extends AppController {
   async getStatics(@Req() req, @Param() param, @Body() body: any) {
     return await this.gradeService.getStatics();
   }
+
+  @Get('/common')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  async getCommon(@Req() req, @Param() param, @Body() body: any) {
+    return await this.gradeService.getCommon();
+  }
 }

@@ -159,7 +159,7 @@ export class EmployeeComponent implements OnInit {
     }
     if (ev.type === 'delete') {
       Swal.fire({
-        text: "Bạn muốn xoá thông báo này không?",
+        text: "Bạn muốn xoá giáo viên này không?",
         showCancelButton: true,
         cancelButtonColor: '#3085d6',
         confirmButtonColor: '#d33',

@@ -68,7 +68,7 @@ import { RoomModule } from './modules/room/room.module';
           retryWrites: true,
           directConnection: true,
           bufferCommands: false,
-          autoCreate: false, // disable `autoCreate` since `bufferCommands` is false
+          autoCreate: false,
         };
       },
       inject: [ConfigService],

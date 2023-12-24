@@ -28,6 +28,7 @@ export class ClassController extends AppController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   async getAll(@Req() req, @Body() body: any) {
     return await this.classService.getAll(
+      body.grade_id,
       body.grade_key,
       body.searchstring,
       body.user_id,

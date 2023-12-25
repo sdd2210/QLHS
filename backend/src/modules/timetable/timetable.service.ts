@@ -152,8 +152,8 @@ export class TimeTableService {
     }
   }
 
-  async getByClass(class_id: string) {
-    const data = await this.tTimeTableModel.aggregate([
+  async getByClass(class_id: string, current_date: any) {
+    let query = [
       {
         $match: {
           class_id: new Types.ObjectId(class_id),
@@ -162,6 +162,27 @@ export class TimeTableService {
       {
         $unwind: '$list_lesson',
       },
+    ] as any[];
+    if (current_date) {
+      const cur_day = new Date(current_date);
+      query.push({
+        $set: {
+          'list_lesson.list_subject': {
+            $filter: {
+              input: '$list_lesson.list_subject',
+              as: 'item',
+              cond: {
+                $and: [
+                  { $lte: ['$$item.start_date', cur_day] },
+                  { $gte: ['$$item.end_date', cur_day] },
+                ],
+              },
+            },
+          },
+        },
+      });
+    }
+    query = query.concat([
       {
         $lookup: {
           from: 'subjects',
@@ -211,6 +232,59 @@ export class TimeTableService {
         },
       },
     ]);
+    const data = await this.tTimeTableModel.aggregate(query);
+    return data;
+  }
+  async getByEmployee(employee_id: string, current_date: any) {
+    const query = [
+      {
+        $unwind: '$list_lesson',
+      },
+    ] as any[];
+    const check = [];
+    if (employee_id) {
+      check.push({
+        $eq: ['$$item.teacher_id', new Types.ObjectId(employee_id)],
+      });
+    }
+    if (current_date) {
+      const cur_day = new Date(current_date);
+      check.push({ $lte: ['$$item.start_date', cur_day] });
+      check.push({ $gte: ['$$item.end_date', cur_day] });
+    }
+    query.push({
+      $set: {
+        'list_lesson.list_subject': {
+          $filter: {
+            input: '$list_lesson.list_subject',
+            as: 'item',
+            cond: {
+              $and: check,
+            },
+          },
+        },
+      },
+    });
+
+    query.push({
+      $match: { $expr: { $gt: [{ $size: '$list_lesson.list_subject' }, 0] } },
+    });
+    query.push({
+      $lookup: {
+        from: 'classes',
+        localField: 'class_id',
+        foreignField: '_id',
+        as: 'class',
+        pipeline: [
+          {
+            $match: {
+              delete_at: null,
+            },
+          },
+        ],
+      },
+    });
+    const data = await this.tTimeTableModel.aggregate(query);
     // .findOne({ class_id: new Types.ObjectId(class_id) })
     // .lean();
     return data;
@@ -248,7 +322,10 @@ export class TimeTableService {
       {
         $match: {
           'list_lesson.order': {
-            $in: list_update_lesson.map((x) => x.value - 2),
+            $in: list_update_lesson.map((x) => x.value - 1),
+          },
+          'list_lesson.list_subject.order': {
+            $in: list_workday.map((x) => x.value - 2),
           },
         },
       },
@@ -334,11 +411,12 @@ export class TimeTableService {
             employee_id,
           );
           x.list_subject[k.value - 2].room_id = new Types.ObjectId(room_id);
+          x.list_subject[k.value - 2].start_date = startdate;
+          x.list_subject[k.value - 2].end_date = enddate;
         });
       }
       return x;
     });
-    console.log(JSON.stringify(cur_lesson));
     const updateData = await this.tTimeTableModel
       .findOneAndUpdate(
         {
@@ -368,140 +446,34 @@ export class TimeTableService {
     subject_id: string,
     startdate: Date,
     enddate: Date,
-    lesson: any,
-    workday: any,
+    lesson_id: any,
+    order: number,
     room_id: any,
   ) {
-    let timtable_id = null;
-    const list_workday = workday.filter((x) => x.selected);
-
-    const list_update_lesson = lesson.filter((x) => x.selected);
-    const checkTimtable = await this.tTimeTableModel
-      .findOne({ class_id: new Types.ObjectId(class_id) })
-      .lean();
-    timtable_id = checkTimtable?._id ?? null;
-    let cur_lesson = checkTimtable?.list_lesson ?? [];
-    const check_duplicate = await this.tTimeTableModel.aggregate([
+    const check_teacher = await this.tTimeTableModel.aggregate([
       {
         $unwind: '$list_lesson',
       },
       {
         $unwind: '$list_lesson.list_subject',
       },
-      { $match: { class_id: { $ne: new Types.ObjectId(class_id) } } },
       {
         $match: {
-          'list_lesson.lesson_id': {
-            $in: list_update_lesson.map((x) => new Types.ObjectId(x)),
-          },
-        },
-      },
-      {
-        $match: {
+          'list_lesson.list_subject.teacher_id': new Types.ObjectId(
+            employee_id,
+          ),
+          'list_lesson._id': new Types.ObjectId(lesson_id),
+          'list_lesson.list_subject.order': order,
           $or: [
             {
-              'list_lesson.list_subject.teacher_id': new Types.ObjectId(
-                employee_id,
-              ),
+              $and: [{}],
             },
             {
-              'list_lesson.list_subject.room_id': new Types.ObjectId(room_id),
+              $and: [{}],
             },
           ],
         },
       },
     ]);
-    if (check_duplicate.length > 0) {
-      const teacher_infor = check_duplicate.filter(
-        (o) => o.list_lesson.list_subject.teacher_id.toString() == employee_id,
-      );
-      const teacher_appear = check_duplicate
-        .filter(
-          (o) =>
-            o.list_lesson.list_subject.teacher_id.toString() == employee_id,
-        )
-        .map((o) => o.list_lesson.list_subject.order);
-      const check_day_teacher = list_workday.filter((x) => {
-        return teacher_appear.includes(x.value - 2);
-      });
-      if (check_day_teacher.length > 0) {
-        throw new HttpException(
-          'Giáo viên bị có lịch học trùng',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
-      const room_infor = check_duplicate.filter(
-        (o) => o.list_lesson.list_subject.room_id.toString() == room_id,
-      );
-      const room_appear = check_duplicate
-        .filter((o) => o.list_lesson.list_subject.room_id.toString() == room_id)
-        .map((o) => o.list_lesson.list_subject.order);
-      const check_day_room = list_workday.filter((x) => {
-        return room_appear.includes(x.value - 2);
-      });
-      if (check_day_room.length > 0) {
-        throw new HttpException('Phòng đã có tiết học', HttpStatus.BAD_REQUEST);
-      }
-    }
-    if (!checkTimtable) {
-      const list_lesson = await this.lessonService.getAll();
-      const new_timtable = {
-        class_id: new Types.ObjectId(class_id),
-        start_date: startdate,
-        end_date: enddate,
-        list_lesson: list_lesson.map((x, i) => ({
-          lesson_id: x._id,
-          order: i,
-          list_subject: Array.from({ length: 6 }, () => {
-            return { order: 1 };
-          }).map((x, i) => ({ order: i })),
-        })),
-      };
-      const newOauthAccess = new this.tTimeTableModel(new_timtable);
-      await newOauthAccess.save();
-      timtable_id = newOauthAccess._id;
-      cur_lesson = newOauthAccess.list_lesson;
-    }
-
-    cur_lesson = cur_lesson.map((x) => {
-      if (
-        list_update_lesson.filter((o) => o.value == x.lesson_id.toString())
-          .length > 0
-      ) {
-        list_workday.map((k) => {
-          console.log(subject_id);
-          x.list_subject[k.value - 2].subject_id = new Types.ObjectId(
-            subject_id,
-          );
-          x.list_subject[k.value - 2].teacher_id = new Types.ObjectId(
-            employee_id,
-          );
-          x.list_subject[k.value - 2].room_id = new Types.ObjectId(room_id);
-        });
-      }
-      return x;
-    });
-    const updateData = await this.tTimeTableModel
-      .findOneAndUpdate(
-        {
-          _id: timtable_id,
-        },
-        {
-          $set: {
-            list_lesson: cur_lesson,
-            start_date: startdate,
-            end_date: enddate,
-          },
-        },
-      )
-      .lean();
-    const employee_add = await this.employeeService.addClass(
-      employee_id,
-      class_id,
-      updateData.start_date,
-      updateData.end_date,
-    );
-    return updateData;
   }
 }

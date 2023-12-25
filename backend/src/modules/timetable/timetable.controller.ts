@@ -27,7 +27,20 @@ export class TimeTableController extends AppController {
   @Post('/getbyClass')
   @UseGuards(JwtAuthGuard, RoleGuard)
   async getbyClass(@Req() req, @Body() body: any) {
-    const data = await this.customerService.getByClass(body.class_id);
+    const data = await this.customerService.getByClass(
+      body.class_id,
+      body.current_date,
+    );
+    return data;
+  }
+
+  @Post('/getbyEmployee')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  async getbyEmployee(@Req() req, @Body() body: any) {
+    const data = await this.customerService.getByEmployee(
+      body.employee_id,
+      body.current_date,
+    );
     return data;
   }
 

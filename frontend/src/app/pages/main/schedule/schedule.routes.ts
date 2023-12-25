@@ -27,6 +27,10 @@ export const scheduleRoute: Routes = [
                 component: ScheduleListComponent,
             },
             {
+                path: 'schedule-list/user/:userId',
+                component: ScheduleListComponent,
+            },
+            {
                 path: '',
                 redirectTo: 'schedule-group',
                 pathMatch: 'full',

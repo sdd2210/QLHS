@@ -17,6 +17,12 @@ class SubjectList {
 
   @Prop()
   order: number;
+
+  @Prop()
+  start_date: Date;
+
+  @Prop()
+  end_date: Date;
 }
 
 class ClassHistory {

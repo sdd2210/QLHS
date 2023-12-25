@@ -17,10 +17,13 @@ export class ScheduleLevelComponent implements OnInit {
     private memberService: MemberService
   ) { }
   ngOnInit(): void {
-    const user = JSON.parse(localStorage.getItem('access_user')).role_key;
+    const user = JSON.parse(localStorage.getItem('access_user'));
     this.memberService.getTeacherUserName().subscribe(res => {
-      if (user.toLowerCase() === "teacher" || user.toLowerCase() === "students") {
+      if (user.role_key.toLowerCase() === "teacher" || user.role_key.toLowerCase() === "students") {
         this.router.navigateByUrl(`/main/schedule/schedule-list/grade/${res.grade[0].grade_key}/class/${res.class_id}`)
+      }
+      else if (user.role_key.toLowerCase() === "teacher2") {
+        this.router.navigateByUrl(`/main/schedule/schedule-list/user/${res.employee[0]._id}`)
       }
       else {
         this.schoolGradeLevel.getListLevelPrivilege().subscribe(res => {

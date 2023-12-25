@@ -45,7 +45,7 @@
                   {{item.subject_name}}
                   
                 </div>
-                <button (click)="edit(i.lesson_id, index + 2, item)" mat-icon-button matTooltip="Sửa đổi" color="primary" aria-label="Example icon-button with a heart icon">
+                <button *ngIf="checkPrivilege && !userId" (click)="edit(i.lesson_id, index + 2, item)" mat-icon-button matTooltip="Sửa đổi" color="primary" aria-label="Example icon-button with a heart icon">
                   <mat-icon>edit</mat-icon>
                 </button>
               </div>
@@ -57,7 +57,7 @@
               </div>
             </div>
             <div class="add" *ngIf="
-                !item.subject_id
+                !item.subject_id && checkPrivilege && checkday && !userId
               ">
               <button (click)="addLesson(i.lesson_id, index + 2)" mat-icon-button matTooltip="Thêm mới" color="warn" aria-label="Example icon-button with a heart icon">
                 <mat-icon>add</mat-icon>

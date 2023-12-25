@@ -27,6 +27,12 @@ export class ScheduleModel {
                 type: 'date',
             },
             {
+                id: 'enddate',
+                label: 'Ngày kết thúc',
+                name: 'title',
+                type: 'date',
+            },
+            {
                 id: 'SubjectId',
                 label: 'Môn học',
                 name: 'SubjectId',
@@ -103,6 +109,12 @@ export class ScheduleModel {
             {
                 id: 'date',
                 label: 'Ngày áp dụng',
+                name: 'title',
+                type: 'date',
+            },
+            {
+                id: 'enddate',
+                label: 'Ngày kết thúc',
                 name: 'title',
                 type: 'date',
             },

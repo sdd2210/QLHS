@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ScheduleModel } from 'src/app/models/schedule.model';
 import { EmployeeService } from 'src/app/services/employee.service';
+import { FormatDateService } from 'src/app/services/format-date.service';
 import { MemberService } from 'src/app/services/member.service';
 import { ScheduleService } from 'src/app/services/schedule.service';
 import { SubjectService } from 'src/app/services/subject.service';
@@ -18,6 +19,7 @@ export class CreateScheduleComponent implements OnInit {
     private employeeService: EmployeeService,
     private scheduleService: ScheduleService,
     private memberService: MemberService,
+    private formatService: FormatDateService,
     public dialoRef: MatDialogRef<CreateScheduleComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) { }
@@ -52,35 +54,53 @@ export class CreateScheduleComponent implements OnInit {
         this.dataModel={
           EmployeeId: this.data.teacher_id,
           SubjectId: this.data.subject_id,
+          RoomId: this.data.room_id,
+          lesson_id: this.data.lesson_id,
+          order: this.data.order,
+          date: this.formatService.formatDate(this.data.start_date,'YYYY-MM-DD'),
+          enddate: this.formatService.formatDate(this.data.end_date,'YYYY-MM-DD'),
         }
         this.subjectService.getListSubjectOfGrade(this.data.gradeId).subscribe((dt =>{
-          this.listCreate[1].data = this.data.dataCommon.concat(dt).map(x=>({
+          this.listCreate[2].data = this.data.dataCommon.concat(dt).map(x=>({
             value: x._id,
             name: x.name,
           }))
         }));
-
-        this.employeeService.getEmployeeBySubject(this.data.subject_id).subscribe((dt)=>{
-          this.listCreate[2].data = dt.original.map(x=>({
-            value: x._id,
-            name: x.account.full_name,
-          }))
-        });
-
+        const check_common = this.data.dataCommon.find(x=>x._id == this.data.subject_id);
+        if(check_common)
+        {
+          const index = this.listCreate.findIndex(x=>x.id == 'EmployeeId');
+          if(index > 0)
+          {
+            this.listCreate.splice(index, 1);
+          }
+        }else{
+          this.employeeService.getEmployeeBySubject(this.data.subject_id).subscribe((dt)=>{
+            this.listCreate[3].data = dt.original.map(x=>({
+              value: x._id,
+              name: x.account.full_name,
+            }))
+          });
+        }
+       
         this.memberService.getAllRoom().subscribe((dt)=>{
-          this.listCreate[3].data = dt.map(x=>({
+          const index = this.listCreate.findIndex(x=>x.id == 'RoomId');
+          this.listCreate[index].data = dt.map(x=>({
             value: x._id,
             name: x.name,
           }))
         });
+        
       }else{
-
-        this.listCreate[4].option[this.data.index - 2].selected = true;
+        const current_semester = JSON.parse(localStorage.getItem('current_semester'));
+        this.listCreate[5].option[this.data.index - 2].selected = true;
         this.dataModel={
-          workday: this.listCreate[4]?.option,
-          lesson: this.listCreate[5]?.option,
+          workday: this.listCreate[5]?.option,
+          lesson: this.listCreate[6]?.option,
           EmployeeId: this.data.teacher_id,
           SubjectId: this.data.subject_id,
+          date: this.formatService.formatDate(new Date(),'YYYY-MM-DD'),
+          enddate: this.formatService.formatDate(new Date(current_semester.semester?.end_date),'YYYY-MM-DD'),
         }
         this.scheduleService.getListLesson().subscribe(res=>{
           const newOpt = res.map(x => {
@@ -97,17 +117,17 @@ export class CreateScheduleComponent implements OnInit {
               selected: false
             }
           });
-          this.listCreate[5].option = newOpt;
-          this.dataModel['lesson'] = this.listCreate[5].option;
+          this.listCreate[6].option = newOpt;
+          this.dataModel['lesson'] = this.listCreate[6].option;
         })
         this.memberService.getAllRoom().subscribe((dt)=>{
-          this.listCreate[3].data = dt.map(x=>({
+          this.listCreate[4].data = dt.map(x=>({
             value: x._id,
             name: x.name,
           }))
         });
         this.subjectService.getListSubjectOfGrade(this.data.gradeId).subscribe((dt =>{
-          this.listCreate[1].data = this.data.dataCommon.concat(dt).map(x=>({
+          this.listCreate[2].data = this.data.dataCommon.concat(dt).map(x=>({
             value: x._id,
             name: x.name,
           }))
@@ -125,16 +145,14 @@ export class CreateScheduleComponent implements OnInit {
   }
 
   callBackHandle(ev) {
-    console.log(ev.type);
+    console.log(ev.item);
     if (ev.type === 'select-data') {
-      console.log(ev.item);
       const check_common = this.data.dataCommon.find(x=>x._id == ev.item.SubjectId);
-      console.log(check_common);
       if(!check_common)
       {
         const index = this.listCreate.findIndex(x=>x.id == 'EmployeeId');
-        if(index != 2){
-          this.listCreate.splice(2, 0, {
+        if(index != 3){
+          this.listCreate.splice(3, 0, {
             id: 'EmployeeId',
             label: 'Giáo viên',
             name: 'EmployeeId',
@@ -144,7 +162,7 @@ export class CreateScheduleComponent implements OnInit {
           },);
         }
         this.employeeService.getEmployeeBySubject(ev.item.SubjectId).subscribe((dt)=>{
-          this.listCreate[2].data = dt.original.map(x=>({
+          this.listCreate[3].data = dt.original.map(x=>({
             value: x._id,
             name: x.account.full_name,
           }))
@@ -161,7 +179,6 @@ export class CreateScheduleComponent implements OnInit {
     }
     else {
       this.dataModel = ev.item;
-      console.log(this.dataModel);
     }
   }
 

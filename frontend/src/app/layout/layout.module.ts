@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
   imports: [
     CommonModule,
     HeaderComponentModule,
-    RouterModule,
+    RouterModule, 
     NavComponentModule,
     MatSidenavModule,
     MatButtonModule

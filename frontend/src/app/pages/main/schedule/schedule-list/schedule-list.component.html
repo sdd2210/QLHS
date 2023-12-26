@@ -11,7 +11,7 @@
       <button *ngIf="checkPrivilege" class="btn-schedule" (click)="upload()">
         <img src="assets/svg/icon-upload.svg" />Nhập
       </button> -->
-      <button (click)="exportExcel(dataExport, 'Thời khoá biểu')" class="btn-schedule">
+      <button (click)="exportExcel(dataSchedule, 'Thời khoá biểu')" class="btn-schedule">
         <img src="assets/svg/icon-output.svg" />Xuất
       </button>
       <p></p> <input class="select-date base-input" type="date" [(ngModel)]="today" (change)="getTimeTable($event.target.value)">

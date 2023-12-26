@@ -42,4 +42,8 @@ export class ScheduleService {
     return this.http.post('timetable/add_new',data).pipe(map((res: any) => res));
 
   }
+  editdLessonTimeTable(data){
+    return this.http.post('timetable/update',data).pipe(map((res: any) => res));
+
+  }
 }

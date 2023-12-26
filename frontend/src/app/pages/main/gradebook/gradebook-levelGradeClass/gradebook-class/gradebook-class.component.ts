@@ -10,6 +10,7 @@ import { SchoolGradeLevelService } from 'src/app/services/school-grade-level.ser
 export class GradebookClassComponent implements OnInit {
 
   data: [{name: 'Lớp 1A'}];
+  user_id;
   constructor(
       private activeRouter: ActivatedRoute,
       private router: Router,
@@ -19,9 +20,19 @@ export class GradebookClassComponent implements OnInit {
   ngOnInit() {
     // this.data = [{name: 'Lớp 1A'}]
       this.gradeId = this.activeRouter.snapshot.params.gradeId;
-      this.schoolLevelGrade.getClassOfGrade(this.gradeId).subscribe(res => {
+      this.user_id = this.activeRouter.snapshot.params.user_id;
+      if(this.gradeId)
+      {
+        this.schoolLevelGrade.getClassOfGrade(this.gradeId).subscribe(res => {
+            this.data = res;
+        })
+      }
+
+      if(this.user_id){
+        this.schoolLevelGrade.getClassOfGrade(this.gradeId, this.user_id).subscribe(res => {
           this.data = res;
-      })
+        });
+      }
   }
 
   routerTo(ev) {

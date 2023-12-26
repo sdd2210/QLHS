@@ -11,23 +11,34 @@
         <div class="line">
           <label for="">Kỳ học</label>
           <select class="selected" [value]='semesterId' (change)="changeSelect($event.currentTarget.value, 'semester')">
-            <option value="all">Tất cả</option>
             <option value="1">Kỳ 1</option>
             <option value="2">Kỳ 2</option>
           </select>
         </div>
         <div class="line">
           <label for="">Môn học</label>
-          <select class="selected" [value]='subjectId' (change)="changeSelect($event.currentTarget.value, 'subject')">
-            <option *ngFor="let subject of listSubject" [value]="subject._id">
-              {{ subject.name }}
-            </option>
-          </select>
+          <ng-container *ngIf="role_key == 'TEACHER2'">
+            <select class="selected" disabled [value]='subjectId' (change)="changeSelect($event.currentTarget.value, 'subject')">
+              <option *ngFor="let subject of listSubject" [value]="subject._id">
+                {{ subject.name }}
+              </option>
+            </select>
+          </ng-container>
+          
+          <ng-container *ngIf="role_key !== 'TEACHER2'">
+            <select class="selected" [value]='subjectId' (change)="changeSelect($event.currentTarget.value, 'subject')">
+              <option *ngFor="let subject of listSubject" [value]="subject._id">
+                {{ subject.name }}
+              </option>
+            </select>
+          </ng-container>
+
+          
         </div>
       </div>
       <div class="list-button">
         <div class="btn-group">
-          <div class="list-button">
+          <div class="list-button" *ngIf="role_key == 'TEACHER2'">
             <button class="btn-schedule" (click)="clickSave()">
               <img src="assets/svg/icon-save.svg" alt="" srcset="" />Lưu
             </button>
@@ -61,7 +72,7 @@
               
             </ng-container>
             <th rowspan="2">TBC</th>
-            <th rowspan="2"></th>
+            <!-- <th rowspan="2"></th> -->
           </tr>
           <tr>
             <ng-container *ngFor="let test of listExam">
@@ -79,26 +90,40 @@
               <td>{{ item.account.full_name }}</td>
               <ng-container *ngFor="let sub_item of item.value">
                 <ng-container *ngFor="let its of sub_item.value; let index=index">
-                  <td>
-                    <div
-                    [ngClass]="'myDiv'+item.stt+''+index+''+sub_item.test_id"
-                    contenteditable=true 
-                    [textContent]="its??''"
-                    (input)="ngOnChanges($event, $event.target.innerHTML, item._id, sub_item.test_id, index)"
-                    (keypress)="keyPress($event)"
-                    >
-                    </div>
-                  </td>
+                  <ng-container *ngIf="subjectId != 'all'">
+                    <td>
+                      <div
+                      [ngClass]="'myDiv'+item.stt+''+index+''+sub_item.test_id"
+                      contenteditable= "true" 
+                      [textContent]="its??''"
+                      (input)="ngOnChanges($event, $event.target.innerHTML, item._id, sub_item.test_id, index)"
+                      (keypress)="keyPress($event)"
+                      >
+                      </div>
+                    </td>
+                  </ng-container>
+                  <ng-container *ngIf="subjectId == 'all'">
+                    <td>
+                      <div
+                      [ngClass]="'myDiv'+item.stt+''+index+''+sub_item.test_id"
+                      [textContent]="its??''"
+                      (input)="ngOnChanges($event, $event.target.innerHTML, item._id, sub_item.test_id, index)"
+                      (keypress)="keyPress($event)"
+                      >
+                      </div>
+                    </td>
+                  </ng-container>
+                  
                 </ng-container>
               </ng-container>
 
               <td>{{getTotal(item.value, item._id)}}</td>
-              <td>
+              <!-- <td>
                 <button mat-icon-button aria-label="expand row" (click)="item.isExpand = !item.isExpand">
                   <mat-icon *ngIf="!item.isExpand">keyboard_arrow_down</mat-icon>
                   <mat-icon *ngIf="item.isExpand">keyboard_arrow_up</mat-icon>
                 </button>
-              </td>
+              </td> -->
             </tr>
             <ng-container matColumnDef="expandedDetail" *ngIf="item.isExpand">
               <tr>

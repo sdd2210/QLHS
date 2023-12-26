@@ -99,7 +99,7 @@ export class CreateScheduleComponent implements OnInit {
           lesson: this.listCreate[6]?.option,
           EmployeeId: this.data.teacher_id,
           SubjectId: this.data.subject_id,
-          date: this.formatService.formatDate(new Date(),'YYYY-MM-DD'),
+          date: this.formatService.formatDate(new Date(this.data.date),'YYYY-MM-DD'),
           enddate: this.formatService.formatDate(new Date(current_semester.semester?.end_date),'YYYY-MM-DD'),
         }
         this.scheduleService.getListLesson().subscribe(res=>{

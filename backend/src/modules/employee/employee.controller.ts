@@ -34,6 +34,12 @@ export class EmployeeController extends AppController {
     );
   }
 
+  @Post('/infor')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  async getInfor(@Req() req, @Body() body: any) {
+    return await this.employeeService.getInfor(body.id);
+  }
+
   @Post('/add_new')
   @UseGuards(JwtAuthGuard, RoleGuard)
   async createOne(@Req() req, @Body() body: any) {

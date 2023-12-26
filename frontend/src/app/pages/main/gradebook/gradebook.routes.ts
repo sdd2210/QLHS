@@ -24,6 +24,10 @@ export const gradeBookRoute: Routes = [
                 component: GradebookClassComponent
             },
             {
+                path: 'gradebook-class/class/:user_id',
+                component: GradebookClassComponent
+            },
+            {
                 path: 'gradebook-table/class/:classId',
                 component: GradebookTableComponent
             },

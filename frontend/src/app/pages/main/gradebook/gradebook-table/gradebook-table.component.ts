@@ -14,6 +14,7 @@ import { SchoolGradeLevelService } from 'src/app/services/school-grade-level.ser
 import { lastValueFrom } from 'rxjs';
 import { SchoolYearService } from 'src/app/services/schoolyear.service';
 import { GradebookService } from 'src/app/services/gradebook.service';
+import { EmployeeService } from 'src/app/services/employee.service';
 
 @Component({
   selector: 'app-gradebook-table',
@@ -42,11 +43,14 @@ export class GradebookTableComponent implements OnInit {
     private gradebookService: GradebookService,
     private scheduleService: ScheduleService,
     private memberService: MemberService,
+    private employeeService: EmployeeService,
     private render: Renderer2,
     private el: ElementRef
   ) {}
   classId;
   gradeId;
+  role_key;
+  user;
   timer;
   subjectId = 'all';
   semesterId;
@@ -64,22 +68,38 @@ export class GradebookTableComponent implements OnInit {
   data: any[];
   dataTmp: any[];
   async ngOnInit(): Promise<void> {
+    this.user = JSON.parse(localStorage.getItem('access_user'));
+    this.role_key = this.user.role_key;
     this.classId = this.activeRouter.snapshot.params.classId;
     let test = this.schoolYearService.getCurrentSchoolYear();
     const next = await lastValueFrom(test);
     this.semesterId = `${next.semester.order}`;
+    
     await this.getClassDetail();
     await this.getListSubject();
     await this.getListStudentOfClass();
-    await this.getSubjectAll();
+    if(this.role_key == 'TEACHER2')
+    {
+      const check_ = await lastValueFrom(this.employeeService.getInforEmployee(this.user._id));
+      this.subjectId = check_[0].subject_id;
+      await this.getSubjectGrade(check_[0].subject_id);
+    }else
+    {
+      await this.getSubjectAll();
+    }
   }
   checkValue(ev) {}
   changeSelect(value, target) {
     if (target == 'semester') {
       this.semesterId = value;
+      if (value !== 'all') {
+        this.getSubjectGrade(this.subjectId);
+      } else {
+        this.dataTmp = [];
+        this.getSubjectAll();
+      }
     }
     if (target == 'subject') {
-      console.log(value);
       this.subjectId = value;
       if (value !== 'all') {
         this.getSubjectGrade(this.subjectId);
@@ -153,29 +173,6 @@ export class GradebookTableComponent implements OnInit {
         }
       }
     }
-    // for(let i = 0; i< this.listTest.length ; i++)
-    // {
-    //   const found = next.findIndex(x=>x._id == this.listTest[i]._id);
-    //   console.log(found)
-      
-    //     for(let j = 0; j< this.data.length ; j++)
-    //     {
-    //       if(found > -1){
-    //         this.data[j].value[i].value[0] = 2;
-    //       }
-    //     }
-    // } 
-    // this.listExam = [];
-    // if(this.subjectId == "all")
-    // {
-    //   this.listTest = this.listSubject;
-    //   this.listExam = [];
-    // }else{
-    //   this.schoolGradeLevel.getListTest().subscribe(res => {
-    //     this.listTest = res.map(x => ({ ...x, list_exam: x.list_exam.map(o => ({ ...o, test_id: x._id })) }));
-    //     this.listExam = this.listTest.reduce((prev, cur) => prev.concat(cur.list_exam), []);
-    //   });
-    // }
   }
   async getSubjectGrade(subject_id) {
     if (subject_id == 'all') {

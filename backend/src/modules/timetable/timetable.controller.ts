@@ -74,24 +74,24 @@ export class TimeTableController extends AppController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   async updateOne(@Req() req, @Body() body: any) {
     const {
-      employee_id,
+      EmployeeId,
       SubjectId,
       startdate,
       enddate,
-      lesson,
-      workday,
+      lesson_id,
+      order,
       class_id,
-      room_id,
+      RoomId,
     } = body;
     const data = await this.customerService.editLessontoClass(
       class_id,
-      employee_id,
+      EmployeeId,
       SubjectId,
       new Date(startdate),
       new Date(enddate),
-      lesson,
-      workday,
-      room_id,
+      lesson_id,
+      order,
+      RoomId,
     );
     return data;
   }

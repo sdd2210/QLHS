@@ -12,6 +12,9 @@ export class EmployeeService {
     getListEmployee(keyword) {
         return this.http.post(`employee/getAll`,{}).pipe(map((res: any) => res));
     }
+    getInforEmployee(id) {
+        return this.http.post(`employee/infor`,{id}).pipe(map((res: any) => res));
+    }
     getEmployeeBySubject(subject_id){
         return this.http.post(`employee/getAll`,{subject_id}).pipe(map((res: any) => res));
     }

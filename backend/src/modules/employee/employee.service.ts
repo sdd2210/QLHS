@@ -167,6 +167,13 @@ export class EmployeeService {
     }
   }
 
+  async getInfor(id: any) {
+    const data = await this.tEmployeeModel.find({
+      account_id: new Types.ObjectId(id),
+    });
+    return data;
+  }
+
   async createEmployee(body: any) {
     const { full_name, email, parent_name, account_id, address, subject_id } =
       body;

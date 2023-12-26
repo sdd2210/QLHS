@@ -31,6 +31,10 @@ getListLevel() {
     if(user.role_key == 'TEACHER' || user.role_key == 'STUDENTS')
     {
       this.router.navigateByUrl(`/main/gradebook/gradebook-table/class/${res.class_id}`)
+    }else
+    if(user.role_key == 'TEACHER2')
+    {
+      this.router.navigateByUrl(`/main/gradebook/gradebook-class/class/${res._id}`)
     }else{
       this.levelService.getListLevelPrivilege().subscribe(res => {
         this.listLevel = res.filter(x=>x.level_key).map(x=>({...x, studentCount: -1}));

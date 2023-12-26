@@ -21,6 +21,11 @@ export class RoomComponent implements OnInit {
   user_id;
   data;
   ngOnInit(): void {
+    const user = JSON.parse(localStorage.getItem('access_user'));
+    if(user.role_key == 'ADMIN')
+    {
+      this.user_id = user._id;
+    }
     this.roomSv.getAllRoom(undefined).subscribe(res=>{
       this.data = res
     })

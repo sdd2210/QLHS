@@ -311,18 +311,22 @@ export class TimeTableService {
       .lean();
     timtable_id = checkTimtable?._id ?? null;
     let cur_lesson = checkTimtable?.list_lesson ?? [];
-    const check_duplicate = await this.tTimeTableModel.aggregate([
+    const check_class = await this.tTimeTableModel.aggregate([
+      {
+        $match: {
+          class_id: new Types.ObjectId(class_id),
+        },
+      },
       {
         $unwind: '$list_lesson',
       },
       {
         $unwind: '$list_lesson.list_subject',
       },
-      // { $match: { class_id: { $ne: new Types.ObjectId(class_id) } } },
       {
         $match: {
-          'list_lesson.order': {
-            $in: list_update_lesson.map((x) => x.value - 1),
+          'list_lesson.lesson_id': {
+            $in: list_update_lesson.map((x) => new Types.ObjectId(x.value)),
           },
           'list_lesson.list_subject.order': {
             $in: list_workday.map((x) => x.value - 2),
@@ -331,51 +335,156 @@ export class TimeTableService {
       },
       {
         $match: {
-          $or: [
-            {
-              'list_lesson.list_subject.teacher_id': new Types.ObjectId(
-                employee_id,
-              ),
-            },
-            {
-              'list_lesson.list_subject.room_id': new Types.ObjectId(room_id),
-            },
-          ],
+          $expr: {
+            $or: [
+              {
+                $and: [
+                  {
+                    $gte: ['$list_lesson.list_subject.end_date', startdate],
+                  },
+                  {
+                    $lte: ['$list_lesson.list_subject.start_date', startdate],
+                  },
+                ],
+              },
+              {
+                $and: [
+                  {
+                    $gte: ['$list_lesson.list_subject.end_date', enddate],
+                  },
+                  {
+                    $lte: ['$list_lesson.list_subject.start_date', enddate],
+                  },
+                ],
+              },
+            ],
+          },
         },
       },
     ]);
-    if (check_duplicate.length > 0) {
-      const teacher_infor = check_duplicate.filter(
-        (o) => o.list_lesson.list_subject.teacher_id.toString() == employee_id,
+    if (check_class.length > 0) {
+      throw new HttpException(
+        'Lớp đã có lịch học vào các khoang thời gian này!',
+        HttpStatus.BAD_REQUEST,
       );
-      const teacher_appear = check_duplicate
-        .filter(
-          (o) =>
-            o.list_lesson.list_subject.teacher_id.toString() == employee_id,
-        )
-        .map((o) => o.list_lesson.list_subject.order);
-      const check_day_teacher = list_workday.filter((x) => {
-        return teacher_appear.includes(x.value - 2);
-      });
-      if (check_day_teacher.length > 0) {
-        throw new HttpException(
-          'Giáo viên bị có lịch học trùng',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-
-      const room_infor = check_duplicate.filter(
-        (o) => o.list_lesson.list_subject.room_id.toString() == room_id,
+    }
+    const check_teacher = await this.tTimeTableModel.aggregate([
+      {
+        $match: {
+          class_id: { $ne: new Types.ObjectId(class_id) },
+        },
+      },
+      {
+        $unwind: '$list_lesson',
+      },
+      {
+        $unwind: '$list_lesson.list_subject',
+      },
+      {
+        $match: {
+          'list_lesson.lesson_id': {
+            $in: list_update_lesson.map((x) => new Types.ObjectId(x.value)),
+          },
+          'list_lesson.list_subject.order': {
+            $in: list_workday.map((x) => x.value - 2),
+          },
+          'list_lesson.list_subject.teacher_id': new Types.ObjectId(
+            employee_id,
+          ),
+        },
+      },
+      {
+        $match: {
+          $expr: {
+            $or: [
+              {
+                $and: [
+                  {
+                    $gte: ['$list_lesson.list_subject.end_date', startdate],
+                  },
+                  {
+                    $lte: ['$list_lesson.list_subject.start_date', startdate],
+                  },
+                ],
+              },
+              {
+                $and: [
+                  {
+                    $gte: ['$list_lesson.list_subject.end_date', enddate],
+                  },
+                  {
+                    $lte: ['$list_lesson.list_subject.start_date', enddate],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    ]);
+    if (check_teacher.length > 0) {
+      throw new HttpException(
+        'Giáo viên đã có lịch học vào các khoang thời gian này!',
+        HttpStatus.BAD_REQUEST,
       );
-      const room_appear = check_duplicate
-        .filter((o) => o.list_lesson.list_subject.room_id.toString() == room_id)
-        .map((o) => o.list_lesson.list_subject.order);
-      const check_day_room = list_workday.filter((x) => {
-        return room_appear.includes(x.value - 2);
-      });
-      if (check_day_room.length > 0) {
-        throw new HttpException('Phòng đã có tiết học', HttpStatus.BAD_REQUEST);
-      }
+    }
+    const check_room = await this.tTimeTableModel.aggregate([
+      {
+        $match: {
+          class_id: { $ne: new Types.ObjectId(class_id) },
+        },
+      },
+      {
+        $unwind: '$list_lesson',
+      },
+      {
+        $unwind: '$list_lesson.list_subject',
+      },
+      {
+        $match: {
+          'list_lesson.lesson_id': {
+            $in: list_update_lesson.map((x) => new Types.ObjectId(x.value)),
+          },
+          'list_lesson.list_subject.order': {
+            $in: list_workday.map((x) => x.value - 2),
+          },
+          'list_lesson.list_subject.room_id': new Types.ObjectId(room_id),
+        },
+      },
+      {
+        $match: {
+          $expr: {
+            $or: [
+              {
+                $and: [
+                  {
+                    $gte: ['$list_lesson.list_subject.end_date', startdate],
+                  },
+                  {
+                    $lte: ['$list_lesson.list_subject.start_date', startdate],
+                  },
+                ],
+              },
+              {
+                $and: [
+                  {
+                    $gte: ['$list_lesson.list_subject.end_date', enddate],
+                  },
+                  {
+                    $lte: ['$list_lesson.list_subject.start_date', enddate],
+                  },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    ]);
+    if (check_room.length > 0) {
+      throw new HttpException(
+        'Phòng học đã có lớp học vào các khoang thời gian này!',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     if (!checkTimtable) {
       const list_lesson = await this.lessonService.getAll();
@@ -403,7 +512,6 @@ export class TimeTableService {
           .length > 0
       ) {
         list_workday.map((k) => {
-          console.log(subject_id);
           x.list_subject[k.value - 2].subject_id = new Types.ObjectId(
             subject_id,
           );
@@ -450,30 +558,39 @@ export class TimeTableService {
     order: number,
     room_id: any,
   ) {
-    const check_teacher = await this.tTimeTableModel.aggregate([
-      {
-        $unwind: '$list_lesson',
-      },
-      {
-        $unwind: '$list_lesson.list_subject',
-      },
-      {
-        $match: {
-          'list_lesson.list_subject.teacher_id': new Types.ObjectId(
-            employee_id,
-          ),
-          'list_lesson._id': new Types.ObjectId(lesson_id),
-          'list_lesson.list_subject.order': order,
-          $or: [
-            {
-              $and: [{}],
+    const updateData = await this.tTimeTableModel
+      .updateOne(
+        {
+          class_id: new Types.ObjectId(class_id),
+        },
+        {
+          $set: {
+            'list_lesson.$[t].list_subject.$[elem]': {
+              start_date: startdate,
+              end_date: enddate,
+              room_id: new Types.ObjectId(room_id),
+              subject_id: new Types.ObjectId(subject_id),
+              teacher_id: new Types.ObjectId(employee_id),
+              order,
             },
-            {
-              $and: [{}],
-            },
+          },
+        },
+        {
+          strict: false,
+          arrayFilters: [
+            { 't.lesson_id': new Types.ObjectId(lesson_id) },
+            { 'elem.order': order },
           ],
         },
-      },
-    ]);
+      )
+      .lean();
+    const employee_add = await this.employeeService.addClass(
+      employee_id,
+      class_id,
+      startdate,
+      enddate,
+    );
+    return updateData;
+    return updateData;
   }
 }

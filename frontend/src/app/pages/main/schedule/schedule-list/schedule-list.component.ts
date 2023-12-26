@@ -122,21 +122,6 @@ export class ScheduleListComponent implements OnInit {
       this.dataSchedule = this.dataSchedule.map(x=>{
         const found = current_timetable.find(o=>x.lesson_id == o.list_lesson.lesson_id);
         if(found){
-          // x.list_subject = found.list_lesson.list_subject.map(o=>{
-          //   const found_room = this.dataRoom.find(k=>k.value == o.room_id);
-          //   const found_subject = found.subjects.find(k=>k._id == o.subject_id);
-          //   const found_techear = found.employee.find(k=>k._id == o.teacher_id);
-          //   if(found_subject){
-          //     o.subject_name = found_subject.name
-          //   }
-          //   if(found_techear){
-          //     o.TeacherName = found_techear.account.full_name
-          //   }
-          //   if(found_room){
-          //     o.RoomName = found_room.name
-          //   }
-          //   return o;
-          // });
           x.list_subject = x.list_subject.map((o,i)=>{
             const f_s = found.list_lesson.list_subject.find(k=>k.order == i);
             const found_room = this.dataRoom.find(k=>k.value == f_s?.room_id);
@@ -165,17 +150,6 @@ export class ScheduleListComponent implements OnInit {
       this.dataSchedule = this.dataSchedule.map(x=>{
         const found = current_timetable.find(o=>x.lesson_id == o.list_lesson.lesson_id);
         if(found){
-          // x.list_subject = found.list_lesson.list_subject.map(o=>{
-          //   const found_room = this.dataRoom.find(k=>k.value == o.room_id);
-          //   const found_subject = found.class[0];
-          //   if(found_subject){
-          //     o.subject_name = found_subject.name
-          //   }
-          //   if(found_room){
-          //     o.RoomName = found_room.name
-          //   }
-          //   return o;
-          // });
           x.list_subject = x.list_subject.map((o,i)=>{
             const f_s = found.list_lesson.list_subject.find(k=>k.order == i);
             const found_room = this.dataRoom.find(k=>k.value == f_s?.room_id);
@@ -436,7 +410,7 @@ export class ScheduleListComponent implements OnInit {
       width: '800px',
       // height: '400px',
       disableClose: true,
-      data:{lesson_id, index, gradeId: this.gradeId, current_semester, dataCommon: this.dataCommon}
+      data:{lesson_id, index, gradeId: this.gradeId, current_semester, dataCommon: this.dataCommon, date: this.today}
     }).afterClosed().subscribe(result => {
       if (result) {
         // console.log(result.item);
@@ -448,7 +422,15 @@ export class ScheduleListComponent implements OnInit {
           class_id: this.classId,
           ...result.item,
         }).subscribe(x=>{
-          this.dataSchedule = x;
+          this.getTimeTable(this.today);
+        },(err) => {
+          Swal.fire({
+            position: 'center',
+            icon: 'error',
+            title: err.error.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
         })
         // this.incomingfile(result.file, result.item);
       }
@@ -463,17 +445,18 @@ export class ScheduleListComponent implements OnInit {
       data:{lesson_id, index, gradeId: this.gradeId, ...item, dataCommon: this.dataCommon, type: 'edit'}
     }).afterClosed().subscribe(result => {
       console.log(result);
-      // if (result) {
-      //   this.scheduleService.addLessonTimeTable({
-      //     employee_id: result.item.Employee,
-      //     class_id: this.classId,
-      //     end_date: result.item.enddate,
-      //     ...result.item,
-      //   }).subscribe(x=>{
-      //     this.dataSchedule = x;
-      //   })
-      //   // this.incomingfile(result.file, result.item);
-      // }
+      if (result) {
+        this.scheduleService.editdLessonTimeTable({
+          employee_id: result.item.Employee,
+          class_id: this.classId,
+          enddate: result.item.enddate,
+          startdate: result.item.date,
+          ...result.item,
+        }).subscribe(x=>{
+          this.getTimeTable(this.today);
+        })
+        // this.incomingfile(result.file, result.item);
+      }
     });
   }
 
@@ -538,6 +521,25 @@ export class ScheduleListComponent implements OnInit {
     });
   }
   exportExcel(data, fileName) {
+    data = data.map(x=>{
+      return {
+        Tiết: x.name,
+        ...(Object as any).fromEntries(
+          x.list_subject
+            .map((o) => ({
+              subject_name: o.subject_name,
+              TeacherName: o.TeacherName,
+              RoomName: o.RoomName,
+            }))
+            .map((c, i) => [
+              `Thứ ${i + 2}`,
+              `${c.subject_name ?? ''}\n ${c.TeacherName ?? ''}\n ${
+                c.RoomName? 'Phòng' + c.RoomName : ''
+              }`,
+            ])
+        ),
+      };
+    })
     this.exportService.exportExcel(data, fileName);
   }
 

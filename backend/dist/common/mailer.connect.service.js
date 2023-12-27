@@ -49,10 +49,7 @@ let MailConnectService = class MailConnectService {
                     },
                     template: {
                         dir: __dirname + '/templates',
-                        adapter: new handlebars_adapter_1.HandlebarsAdapter(undefined, {
-                            inlineCssEnabled: true,
-                            inlineCssOptions: { url: ' ' },
-                        }),
+                        adapter: new handlebars_adapter_1.HandlebarsAdapter(),
                         options: {
                             strict: true,
                         },

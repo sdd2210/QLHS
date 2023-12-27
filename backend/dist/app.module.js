@@ -78,10 +78,10 @@ AppModule = __decorate([
                 imports: [config_1.ConfigModule],
                 useFactory: (config) => __awaiter(void 0, void 0, void 0, function* () {
                     return {
-                        uri: `mongodb://${config.get('DB_HOST')}:${config.get('DB_PORT')}`,
-                        user: config.get('DB_USER') || undefined,
-                        pass: config.get('DB_PWD') || undefined,
-                        dbName: config.get('DB_NAME') || undefined,
+                        uri: `mongodb://54.255.224.210:27017`,
+                        user: 'myUserAdmin',
+                        pass: 'abc123',
+                        dbName: 'school',
                         useNewUrlParser: true,
                         retryWrites: true,
                         directConnection: true,

@@ -78,7 +78,7 @@ AppModule = __decorate([
                 imports: [config_1.ConfigModule],
                 useFactory: (config) => __awaiter(void 0, void 0, void 0, function* () {
                     return {
-                        uri: `mongodb://54.255.224.210:27017`,
+                        uri: `mongodb://18.143.151.59:27017`,
                         user: 'myUserAdmin',
                         pass: 'abc123',
                         dbName: 'school',

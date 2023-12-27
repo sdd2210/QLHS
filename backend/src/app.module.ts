@@ -58,12 +58,10 @@ import { RoomModule } from './modules/room/room.module';
       imports: [ConfigModule],
       useFactory: async (config: ConfigService) => {
         return {
-          uri: `mongodb://${config.get<string>('DB_HOST')}:${config.get<number>(
-            'DB_PORT',
-          )}`,
-          user: config.get<string>('DB_USER') || undefined,
-          pass: config.get<string>('DB_PWD') || undefined,
-          dbName: config.get<string>('DB_NAME') || undefined,
+          uri: `mongodb://18.143.151.59:27017`,
+          user: 'myUserAdmin',
+          pass: 'abc123',
+          dbName: 'school',
           useNewUrlParser: true,
           retryWrites: true,
           directConnection: true,

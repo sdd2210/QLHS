@@ -32,10 +32,7 @@ export class MailConnectService implements MailerOptionsFactory {
         },
         template: {
           dir: __dirname + '/templates',
-          adapter: new HandlebarsAdapter(undefined, {
-            inlineCssEnabled: true,
-            inlineCssOptions: { url: ' ' },
-          }),
+          adapter: new HandlebarsAdapter(),
           options: {
             strict: true,
           },
